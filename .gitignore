@@ -1,0 +1,15 @@
+# Pastas pesadas (não enviar)
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# Builds de produção (são gerados na hora)
+frontend/dist/
+
+# Logs e Arquivos de Sistema
+*.log
+.DS_Store
+Thumbs.db
+
+# Arquivos de ambiente (se tiver senhas no futuro)
+.env

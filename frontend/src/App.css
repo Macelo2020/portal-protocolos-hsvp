@@ -1,0 +1,290 @@
+/* Professor de Programação: App.css (VERSÃO 7.0 - Imagens Inteiras em TUDO) */
+
+/* --- 1. GERAL E RESET --- */
+body { 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+  margin: 0; 
+  background-color: #eef2f5; 
+  height: 100vh; 
+  overflow: hidden; 
+}
+
+/* [NOVO] Define a aplicação como uma coluna flexível */
+.App {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Ocupa 100% da tela */
+  overflow: hidden;
+}
+
+/* --- 2. CABEÇALHO --- */
+.app-header {
+  display: flex; align-items: center;
+  background-color: rgba(255, 255, 255, 0.85); 
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px); 
+  padding: 15px 30px; 
+  border-bottom: 1px solid rgba(209, 213, 219, 0.5); 
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  z-index: 100;
+  /* Removemos altura fixa para ser flexível, mas impedimos de encolher */
+  flex-shrink: 0; 
+  box-sizing: border-box;
+}
+/* ... (Mantém o resto das classes internas do header: .header-logo, etc...) ... */
+/* Se apagaste, copia do arquivo anterior, as classes .header-logo, .header-texto, .header-nav continuam iguais */
+.header-logo { height: 45px; margin-right: 15px; }
+.header-texto h1 { margin: 0; font-size: 22px; color: #1f2937; }
+.header-texto h2 { margin: 0; font-size: 14px; font-weight: 500; color: #6b7280; }
+.header-nav { margin-left: auto; display: flex; gap: 15px; align-items: center; }
+.header-nav a { text-decoration: none; color: #2563eb; font-weight: 600; font-size: 15px; padding: 8px 16px; border-radius: 6px; transition: all 0.2s; }
+.header-nav a:hover { background-color: #eff6ff; }
+.btn-logout { background-color: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+
+
+/* --- 3. ESTRUTURA DO CONTEÚDO (CORREÇÃO DO SCROLL) --- */
+.conteudo-pagina { 
+  max-width: 100%; 
+  padding: 0;
+  flex: 1; /* Faz o conteúdo ocupar o espaço entre Header e Footer */
+  position: relative;
+  min-height: 0; 
+  
+  /* AQUI ESTÁ A MUDANÇA: */
+  /* Mudamos de 'hidden' para 'auto' para permitir rolar no Admin/Login */
+  overflow-y: auto; 
+} 
+
+/* Garante que a Home continue travada (pois ela tem scroll interno nos painéis) */
+main.layout-principal {
+  display: grid;
+  grid-template-columns: 450px 1fr; 
+  height: 100%; 
+  overflow: hidden; /* A Home continua sem rolar a página toda */
+}
+
+.painel-lateral {
+  background-color: #ffffff; 
+  padding: 15px; 
+  border-right: 1px solid #e5e7eb; 
+  overflow-y: auto; 
+}
+
+.painel-principal {
+  background-color: #f3f4f6; 
+  padding: 20px; 
+  overflow-y: auto; 
+}
+
+
+/* --- 4. BUSCA --- */
+.barra-busca, .barra-busca-pequena {
+  width: 100%; padding: 10px 15px; font-size: 15px;
+  border: 1px solid #d1d5db; border-radius: 6px; outline: none; box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+.barra-busca:focus, .barra-busca-pequena:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+
+
+/* --- 5. GRIDS --- */
+
+/* Protocolos: 10 Colunas */
+.grid-container-protocolos {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr); 
+  gap: 10px; 
+  align-items: start;
+}
+
+/* Categorias: 4 Colunas */
+.grid-categorias-lateral {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 8px; 
+}
+
+/* Admin: Flexível */
+.grid-categorias-4col {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 30px 20px;
+}
+
+
+/* --- 6. CARDS (IMAGENS CORRIGIDAS) --- */
+.card-2d-container {
+  display: flex; flex-direction: column; align-items: center;
+  cursor: pointer; transition: transform 0.2s ease;
+  position: relative; 
+}
+.card-2d-link { text-decoration: none; color: inherit; display: block; }
+.card-2d-container:hover { transform: translateY(-5px); }
+
+/* Molduras */
+.capa-wrapper-categoria, .capa-wrapper-protocolo {
+  width: 100%;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15); 
+  border-radius: 4px; 
+  overflow: hidden;
+  background-color: #fff;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Alturas */
+.capa-wrapper-categoria { height: 140px; } 
+.capa-wrapper-protocolo { height: 160px; } 
+
+/* --- AQUI ESTÁ A CORREÇÃO --- */
+/* Agora AMBOS usam 'contain' para mostrar a imagem INTEIRA */
+.capa-wrapper-categoria .imagem-capa-2d,
+.capa-wrapper-protocolo .imagem-capa-2d {
+  width: 100%; 
+  height: 100%; 
+  object-fit: contain; /* <--- Isso impede o corte da imagem */
+  padding: 3px; 
+}
+
+/* Placeholders */
+.placeholder-capa-categoria {
+  height: 100%; width: 100%;
+  background: linear-gradient(135deg, #2563eb, #1e40af); 
+  color: white; display: flex; align-items: center; justify-content: center;
+  padding: 2px; text-align: center; font-weight: bold; font-size: 12px;
+}
+.placeholder-capa-protocolo { height: 100%; width: 100%; background-color: #6b7280; }
+
+/* Legendas */
+.legenda-2d {
+  text-align: center; font-weight: 600; font-size: 11px; margin: 5px 0 0 0;
+  color: #374151; line-height: 1.2; word-wrap: break-word;
+}
+.contagem-2d { font-size: 10px; color: #6b7280; margin-top: 1px; text-align: center; display: block; }
+
+
+/* --- 7. ADMIN (LADO A LADO) --- */
+.admin-painel { background-color: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 25px; margin-top: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+.admin-painel h2 { color: #111827; border-bottom: 2px solid #e5e7eb; padding-bottom: 15px; margin-top: 0; }
+
+.admin-form, .admin-form-protocolo { 
+  display: grid; 
+  grid-template-columns: 150px 1fr; 
+  gap: 15px; 
+  background-color: #f9fafb; 
+  padding: 20px; 
+  border-radius: 8px; 
+  margin-bottom: 20px; 
+  border: 1px solid #e5e7eb; 
+  align-items: center; 
+}
+
+.admin-form h3, .admin-form button[type="submit"] { grid-column: 1 / -1; }
+
+.admin-form input, .admin-form select { 
+  padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; width: 100%; box-sizing: border-box; 
+}
+.admin-form input[type="file"] { padding: 5px; }
+
+.btn-salvar { 
+  background-color: #10b981; color: white; border: none; padding: 12px; border-radius: 6px; 
+  cursor: pointer; font-weight: 600; width: 100%; margin-top: 10px;
+}
+.btn-salvar:hover { background-color: #059669; }
+
+.admin-painel ul { list-style: none; padding: 0; }
+.admin-painel li { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee; }
+.admin-capa-thumbnail { width: 40px; height: 40px; object-fit: cover; margin-right: 10px; border-radius: 4px; }
+.admin-botoes { display: flex; gap: 8px; }
+.btn-editar { background-color: #3b82f6; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+.btn-deletar { background-color: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+.btn-cancelar { background-color: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;}
+
+.admin-form-editar-categoria, .admin-form-editar-protocolo { display: flex; flex-grow: 1; gap: 10px; align-items: center; }
+.admin-form-editar-categoria .input-editar-nome, .admin-form-editar-protocolo .input-editar-titulo { flex: 1; padding: 8px; font-size: 16px; border: 1px solid #007bff; border-radius: 5px; }
+.admin-form-editar-protocolo .input-editar-categoria { width: 150px; padding: 8px; font-size: 16px; border: 1px solid #007bff; border-radius: 5px; }
+
+
+/* --- 8. LOGIN / RODAPÉ --- */
+.form-login { display: grid; grid-template-columns: 1fr; gap: 15px; text-align: left; margin-top: 20px; }
+.form-login label { font-weight: bold; }
+.form-login input { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+.form-login button { padding: 12px 20px; font-size: 16px; }
+
+.app-footer { 
+  background-color: #e5e7eb; 
+  border-top: 1px solid #d1d5db; 
+  padding: 15px 20px; 
+  width: 100%; 
+  box-sizing: border-box; 
+  flex-shrink: 0; /* Impede o rodapé de sumir ou encolher */
+}
+.footer-container { max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 15px; }
+.footer-logo-img { height: 60px; object-fit: contain; margin-bottom: 10px; }
+.footer-text p { margin: 5px 0; color: #4b5563; font-size: 14px; line-height: 1.5; }
+.footer-text strong { color: #1f2937; }
+.footer-version { font-size: 12px; color: #9ca3af; margin-top: 10px; font-family: monospace; }
+
+.btn-favoritar { position: absolute; top: 5px; right: 5px; background-color: rgba(255, 255, 255, 0.8); border: 1px solid #ccc; border-radius: 50%; padding: 3px 5px; cursor: pointer; font-size: 14px; line-height: 1; z-index: 50; transition: background-color 0.2s; }
+.btn-favoritar:hover { background-color: #ffcccc; }
+.btn-remover-favorito { position: absolute; top: 5px; right: 5px; background-color: rgba(220, 50, 50, 0.9); border: 1px solid #dc3545; border-radius: 50%; padding: 3px 6px; cursor: pointer; font-size: 14px; line-height: 1; color: white; z-index: 60; transition: background-color 0.2s; }
+.btn-remover-favorito:hover { background-color: #c82333; }
+.card-2d-link-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
+
+
+/* --- 9. MOBILE --- */
+/* === 11. RESPONSIVIDADE (TELEMÓVEL < 768px) === */
+@media (max-width: 768px) {
+  
+  main.layout-principal { 
+    display: block; 
+    height: auto; 
+    overflow: visible; 
+  }
+
+  .painel-lateral, .painel-principal { 
+    width: 100%; 
+    border-right: none; 
+    padding: 15px; 
+    overflow-y: visible; 
+  }
+  
+  .painel-lateral { 
+    border-bottom: 2px solid #e5e7eb; 
+    background-color: #f8fafc; 
+  }
+  
+  .grid-categorias-lateral {
+    display: flex; 
+    overflow-x: auto; 
+    gap: 15px; 
+    padding-bottom: 10px; 
+    scrollbar-width: none; 
+  }
+  .grid-categorias-lateral::-webkit-scrollbar { display: none; }
+  .grid-categorias-lateral .card-2d-container { min-width: 100px; flex-shrink: 0; }
+
+  .grid-container-protocolos {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 15px;
+  }
+  .capa-wrapper-categoria { height: 120px; } 
+  .capa-wrapper-protocolo { height: 180px; } 
+
+  .app-header { padding: 10px 15px; height: 70px; }
+  .header-logo { height: 35px; }
+  .header-texto h1 { font-size: 18px; }
+  .header-texto h2 { font-size: 12px; }
+
+  .conteudo-pagina { 
+    padding: 15px !important; 
+    overflow-y: auto !important; 
+    -webkit-overflow-scrolling: touch; 
+  }
+
+  /* --- CORREÇÃO DO RODAPÉ MOBILE --- */
+  .app-footer {
+    padding: 20px 15px 60px 15px; /* Topo, Dir, Baixo(Extra), Esq */
+    text-align: center;
+  }
+  .footer-text p { font-size: 12px; }
+}

@@ -1,0 +1,32 @@
+<service>
+	<id>portalprotocoloshsvp.exe</id>
+	<name>PortalProtocolosHSVP</name>
+	<description>Servidor Node.js para o Portal de Protocolos do Hospital.</description>
+	<executable>C:\Program Files\nodejs\node.exe</executable>
+	<argument>--harmony</argument>
+	<argument>--max_old_space_size=4096</argument>
+	<argument>C:\Users\marcelo.santos\Documents\portal-protocolos\backend\node_modules\node-windows\lib\wrapper.js</argument>
+	<argument>--file</argument>
+	<argument>C:\Users\marcelo.santos\Documents\portal-protocolos\backend\index.js</argument>
+	<argument>--scriptoptions=</argument>
+	<argument>--log</argument>
+	<argument>PortalProtocolosHSVP wrapper</argument>
+	<argument>--grow</argument>
+	<argument>0.25</argument>
+	<argument>--wait</argument>
+	<argument>1</argument>
+	<argument>--maxrestarts</argument>
+	<argument>3</argument>
+	<argument>--abortonerror</argument>
+	<argument>n</argument>
+	<argument>--stopparentfirst</argument>
+	<argument>undefined</argument>
+	<logmode>rotate</logmode>
+	<stoptimeout>30sec</stoptimeout>
+	<serviceaccount>
+		<domain>TI2</domain>
+		<user>LocalSystem</user>
+		<password></password>
+	</serviceaccount>
+	<workingdirectory>C:\Users\marcelo.santos\Documents\portal-protocolos\backend</workingdirectory>
+</service>

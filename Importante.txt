@@ -1,0 +1,46 @@
+Toda Vez que alterar o código do portal de protocolos 
+
+
+Seguir os passos:
+
+Se no futuro precisares de fazer manutenção ou adicionar novas funcionalidades, já sabes o caminho:
+
+Visual: frontend/src/App.css e PaginaHome.jsx.
+
+Lógica: backend/index.js ou os componentes do React.
+
+Deploy: npm run build e copiar para o XAMPP.
+
+
+
+Terminal do VScode
+
+Passo 1: Refazer o Build (Gerar o Pacote Novo) 📦
+Como alterámos o código, precisamos gerar a pasta dist novamente.
+
+No VS Code, abre o terminal (Ctrl + ').
+
+Roda o comando:
+
+Bash
+
+npm run build
+
+
+Passo 2: Atualizar o XAMPP 🔄
+Agora vamos colocar os arquivos novos no servidor.
+
+Vai à pasta C:\xampp\htdocs\portal.
+
+APAGA tudo o que está lá dentro (exceto o arquivo .htaccess se ele estiver lá. Se apagares o .htaccess, teremos de criá-lo de novo, o que é rápido).
+
+Vai à pasta do teu projeto: frontend/dist.
+
+Copia tudo o que está dentro da dist.
+
+Cola dentro de C:\xampp\htdocs\portal.
+
+
+Passo 4: Verificar o .htaccess (Muito Importante!)
+
+Teste Final: Agora atualiza a página no navegador (192.168.0.201/portal). O conteúdo do meio deve aparecer magicamente! ✨
