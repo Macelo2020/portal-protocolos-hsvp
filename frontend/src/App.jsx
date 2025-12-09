@@ -32,7 +32,7 @@ function App() {
       
       {/* --- 1. CABEÇALHO (Layout Fixo) --- */}
       <header className="app-header">
-        <img src="/portal/logo.png" alt="Hospital São Vicente de Paulo" className="header-logo" />
+        <img src="/portal/logo-branca.png" alt="Hospital São Vicente de Paulo" className="header-logo" />
         <div className="header-texto">
           <h1>Portal de Protocolos</h1>
           <h2>Hospital São Vicente de Paulo</h2>

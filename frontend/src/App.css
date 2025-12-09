@@ -1,4 +1,4 @@
-/* Professor de Programação: App.css (VERSÃO 7.0 - Imagens Inteiras em TUDO) */
+/* Professor de Programação: App.css (VERSÃO FINAL 8.0 - Lateral Maior + Scroll Admin Resolvido) */
 
 /* --- 1. GERAL E RESET --- */
 body { 
@@ -9,75 +9,131 @@ body {
   overflow: hidden; 
 }
 
-/* [NOVO] Define a aplicação como uma coluna flexível */
+/* Define a aplicação como uma coluna flexível (Cabeçalho + Conteúdo + Rodapé) */
 .App {
   display: flex;
   flex-direction: column;
-  height: 100vh; /* Ocupa 100% da tela */
+  height: 100vh; 
   overflow: hidden;
 }
 
-/* --- 2. CABEÇALHO --- */
+/* --- 2. CABEÇALHO (Ajustado: Maior e Mais Visível) --- */
 .app-header {
   display: flex; align-items: center;
-  background-color: rgba(255, 255, 255, 0.85); 
-  backdrop-filter: blur(10px); 
-  -webkit-backdrop-filter: blur(10px); 
-  padding: 15px 30px; 
-  border-bottom: 1px solid rgba(209, 213, 219, 0.5); 
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  background: linear-gradient(135deg, #004a9f, #003370); 
+  box-shadow: 0 4px 15px rgba(0, 50, 120, 0.3);
+  
+  /* AUMENTADO: Mais espaço vertical (era 15px) */
+  padding: 25px 35px; 
+  
   z-index: 100;
-  /* Removemos altura fixa para ser flexível, mas impedimos de encolher */
   flex-shrink: 0; 
   box-sizing: border-box;
+  color: white;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
-/* ... (Mantém o resto das classes internas do header: .header-logo, etc...) ... */
-/* Se apagaste, copia do arquivo anterior, as classes .header-logo, .header-texto, .header-nav continuam iguais */
-.header-logo { height: 45px; margin-right: 15px; }
-.header-texto h1 { margin: 0; font-size: 22px; color: #1f2937; }
-.header-texto h2 { margin: 0; font-size: 14px; font-weight: 500; color: #6b7280; }
-.header-nav { margin-left: auto; display: flex; gap: 15px; align-items: center; }
-.header-nav a { text-decoration: none; color: #2563eb; font-weight: 600; font-size: 15px; padding: 8px 16px; border-radius: 6px; transition: all 0.2s; }
-.header-nav a:hover { background-color: #eff6ff; }
-.btn-logout { background-color: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+
+.header-logo { 
+  /* AUMENTADO: Logo maior (era 48px) */
+  height: 70px; 
+  margin-right: 20px; 
+  transition: transform 0.3s;
+}
+.header-logo:hover { transform: scale(1.05); }
+
+/* TEXTOS DO TÍTULO */
+.header-texto h1 { 
+  margin: 0; 
+  /* AUMENTADO: Fonte do Título maior (era 22px) */
+  font-size: 32px; 
+  
+  color: #ffffff; 
+  font-weight: 700; 
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+  line-height: 1.1; /* Melhora o espaçamento entre linhas */
+}
+.header-texto h2 { 
+  margin: 5px 0 0 0; /* Um pouco de espaço do título */
+  font-size: 14px; font-weight: 500; 
+  color: rgba(255, 255, 255, 0.9); 
+  text-transform: uppercase; letter-spacing: 1px;
+}
+
+/* LINKS DE NAVEGAÇÃO */
+.header-nav { margin-left: auto; display: flex; gap: 12px; align-items: center; }
+
+.header-nav a { 
+  text-decoration: none; 
+  color: white; /* Texto Branco */
+  font-weight: 600; font-size: 14px; 
+  padding: 8px 18px; 
+  border-radius: 20px; 
+  
+  /* Fundo translúcido (efeito vidro sobre o azul) */
+  background-color: rgba(255, 255, 255, 0.15); 
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s; 
+}
+
+.header-nav a:hover { 
+  background-color: white; 
+  color: #003370; /* Texto vira azul ao passar o mouse */
+  transform: translateY(-2px);
+}
+
+/* BOTÃO DE SAIR */
+.btn-logout { 
+  background-color: #ef4444; /* Vermelho */
+  color: white; border: none; padding: 8px 18px; border-radius: 20px; 
+  font-weight: 600; cursor: pointer; 
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.btn-logout:hover { background-color: #dc2626; }
 
 
-/* --- 3. ESTRUTURA DO CONTEÚDO (CORREÇÃO DO SCROLL) --- */
+
+
+/* --- 3. ESTRUTURA DO LAYOUT --- */
 .conteudo-pagina { 
   max-width: 100%; 
   padding: 0;
-  flex: 1; /* Faz o conteúdo ocupar o espaço entre Header e Footer */
+  flex: 1; /* Ocupa todo o espaço livre no meio */
   position: relative;
   min-height: 0; 
   
-  /* AQUI ESTÁ A MUDANÇA: */
-  /* Mudamos de 'hidden' para 'auto' para permitir rolar no Admin/Login */
+  /* [CORREÇÃO CRÍTICA DO RODAPÉ] */
+  /* Mudamos de 'hidden' para 'auto'. Isso permite que o Admin role a tela se a lista for grande. */
   overflow-y: auto; 
 } 
 
-/* Garante que a Home continue travada (pois ela tem scroll interno nos painéis) */
 main.layout-principal {
   display: grid;
-  grid-template-columns: 450px 1fr; 
+  /* [CORREÇÃO DA LATERAL] Aumentado para 480px para as 4 colunas caberem bem */
+  grid-template-columns: 480px 1fr; 
+  
+  /* A Home continua a ocupar 100% e gerir o seu próprio scroll */
   height: 100%; 
-  overflow: hidden; /* A Home continua sem rolar a página toda */
+  overflow: hidden; 
 }
 
+/* Painéis da Home */
 .painel-lateral {
-  background-color: #ffffff; 
+  background-color: #f0fdf4; /* Verde Claro */
   padding: 15px; 
-  border-right: 1px solid #e5e7eb; 
+  border-right: 1px solid #dcfce7; /* Borda verde suave */
   overflow-y: auto; 
 }
 
+/* Painel Direito (Protocolos) */
 .painel-principal {
-  background-color: #f3f4f6; 
+  /* Mudamos de cinza para este Azul Gelo muito suave */
+  background-color: #f0f8ff; 
   padding: 20px; 
   overflow-y: auto; 
 }
 
 
-/* --- 4. BUSCA --- */
+/* --- 4. CAIXAS DE BUSCA --- */
 .barra-busca, .barra-busca-pequena {
   width: 100%; padding: 10px 15px; font-size: 15px;
   border: 1px solid #d1d5db; border-radius: 6px; outline: none; box-sizing: border-box;
@@ -87,7 +143,6 @@ main.layout-principal {
 
 
 /* --- 5. GRIDS --- */
-
 /* Protocolos: 10 Colunas */
 .grid-container-protocolos {
   display: grid;
@@ -100,7 +155,7 @@ main.layout-principal {
 .grid-categorias-lateral {
   display: grid;
   grid-template-columns: repeat(4, 1fr); 
-  gap: 8px; 
+  gap: 10px; /* Um pouco mais de espaço entre elas */
 }
 
 /* Admin: Flexível */
@@ -111,7 +166,7 @@ main.layout-principal {
 }
 
 
-/* --- 6. CARDS (IMAGENS CORRIGIDAS) --- */
+/* --- 6. CARDS (LIVROS) --- */
 .card-2d-container {
   display: flex; flex-direction: column; align-items: center;
   cursor: pointer; transition: transform 0.2s ease;
@@ -135,14 +190,10 @@ main.layout-principal {
 .capa-wrapper-categoria { height: 140px; } 
 .capa-wrapper-protocolo { height: 160px; } 
 
-/* --- AQUI ESTÁ A CORREÇÃO --- */
-/* Agora AMBOS usam 'contain' para mostrar a imagem INTEIRA */
+/* Imagens INTEIRAS (contain) */
 .capa-wrapper-categoria .imagem-capa-2d,
 .capa-wrapper-protocolo .imagem-capa-2d {
-  width: 100%; 
-  height: 100%; 
-  object-fit: contain; /* <--- Isso impede o corte da imagem */
-  padding: 3px; 
+  width: 100%; height: 100%; object-fit: contain; padding: 3px; 
 }
 
 /* Placeholders */
@@ -162,13 +213,13 @@ main.layout-principal {
 .contagem-2d { font-size: 10px; color: #6b7280; margin-top: 1px; text-align: center; display: block; }
 
 
-/* --- 7. ADMIN (LADO A LADO) --- */
+/* --- 7. ADMIN (FORMULÁRIO ALINHADO) --- */
 .admin-painel { background-color: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 25px; margin-top: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
 .admin-painel h2 { color: #111827; border-bottom: 2px solid #e5e7eb; padding-bottom: 15px; margin-top: 0; }
 
 .admin-form, .admin-form-protocolo { 
   display: grid; 
-  grid-template-columns: 150px 1fr; 
+  grid-template-columns: 150px 1fr; /* Rótulo 150px | Input resto */
   gap: 15px; 
   background-color: #f9fafb; 
   padding: 20px; 
@@ -210,28 +261,68 @@ main.layout-principal {
 .form-login input { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
 .form-login button { padding: 12px 20px; font-size: 16px; }
 
+/* --- 9. RODAPÉ (Ajustado: Mais Compacto) --- */
 .app-footer { 
-  background-color: #e5e7eb; 
-  border-top: 1px solid #d1d5db; 
-  padding: 15px 20px; 
+  background-color: #0056b3; 
+  color: white; 
+  border-top: 1px solid rgba(255, 255, 255, 0.1); 
+  
+  /* 10. REDUZIDO: Menos altura (era 15px 20px) */
+  padding: 10px 20px; 
+  
   width: 100%; 
   box-sizing: border-box; 
-  flex-shrink: 0; /* Impede o rodapé de sumir ou encolher */
+  flex-shrink: 0; 
 }
-.footer-container { max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 15px; }
-.footer-logo-img { height: 60px; object-fit: contain; margin-bottom: 10px; }
-.footer-text p { margin: 5px 0; color: #4b5563; font-size: 14px; line-height: 1.5; }
-.footer-text strong { color: #1f2937; }
-.footer-version { font-size: 12px; color: #9ca3af; margin-top: 10px; font-family: monospace; }
 
-.btn-favoritar { position: absolute; top: 5px; right: 5px; background-color: rgba(255, 255, 255, 0.8); border: 1px solid #ccc; border-radius: 50%; padding: 3px 5px; cursor: pointer; font-size: 14px; line-height: 1; z-index: 50; transition: background-color 0.2s; }
+.footer-container { 
+  max-width: 1000px; 
+  margin: 0 auto; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  text-align: center; 
+  
+  /* REDUZIDO: Menos espaço entre logo e texto (era 15px) */
+  gap: 5px; 
+}
+
+.footer-logo-img { 
+  /* REDUZIDO: Logo um pouco menor para caber melhor (era 60px) */
+  height: 45px; 
+  object-fit: contain; 
+  margin-bottom: 2px; 
+}
+
+.footer-text p { 
+  margin: 2px 0; /* Margens mínimas */
+  color: rgba(255, 255, 255, 0.9); 
+  font-size: 13px; /* Fonte levemente menor */
+  line-height: 1.4; 
+}
+
+.footer-text strong { color: #ffffff; }
+
+.footer-version { 
+  font-size: 11px; 
+  color: rgba(255, 255, 255, 0.8); 
+  margin-top: 5px; 
+  font-family: monospace; 
+  background: rgba(255, 255, 255, 0.15); 
+  padding: 1px 6px; 
+  border-radius: 8px; 
+  display: inline-block;
+}
+
+
+.btn-favoritar { position: absolute; top: 5px; right: 5px; background-color: rgba(255, 255, 255, 0.8); border: 1px solid #ccc; border-radius: 50%; padding: 3px 5px; cursor: pointer; font-size: 18px; line-height: 1; z-index: 50; transition: background-color 0.2s; }
 .btn-favoritar:hover { background-color: #ffcccc; }
 .btn-remover-favorito { position: absolute; top: 5px; right: 5px; background-color: rgba(220, 50, 50, 0.9); border: 1px solid #dc3545; border-radius: 50%; padding: 3px 6px; cursor: pointer; font-size: 14px; line-height: 1; color: white; z-index: 60; transition: background-color 0.2s; }
 .btn-remover-favorito:hover { background-color: #c82333; }
 .card-2d-link-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
 
 
-/* --- 9. MOBILE --- */
+/* --- 11. MOBILE --- */
 /* === 11. RESPONSIVIDADE (TELEMÓVEL < 768px) === */
 @media (max-width: 768px) {
   
@@ -249,8 +340,8 @@ main.layout-principal {
   }
   
   .painel-lateral { 
-    border-bottom: 2px solid #e5e7eb; 
-    background-color: #f8fafc; 
+    border-bottom: 2px solid #bbf7d0; 
+    background-color: #f0fdf4; 
   }
   
   .grid-categorias-lateral {
@@ -270,8 +361,8 @@ main.layout-principal {
   .capa-wrapper-categoria { height: 120px; } 
   .capa-wrapper-protocolo { height: 180px; } 
 
-  .app-header { padding: 10px 15px; height: 70px; }
-  .header-logo { height: 35px; }
+  .app-header { padding: 10px 15px; height: auto; flex-wrap: wrap; }
+  .header-logo { height: 40px; margin-bottom: 5px; }
   .header-texto h1 { font-size: 18px; }
   .header-texto h2 { font-size: 12px; }
 
@@ -279,12 +370,15 @@ main.layout-principal {
     padding: 15px !important; 
     overflow-y: auto !important; 
     -webkit-overflow-scrolling: touch; 
-  }
+  } /* <--- A CHAVETA QUE FALTAVA ESTÁ AQUI AGORA */
 
-  /* --- CORREÇÃO DO RODAPÉ MOBILE --- */
+  /* --- AJUSTE RODAPÉ MOBILE --- */
   .app-footer {
-    padding: 20px 15px 60px 15px; /* Topo, Dir, Baixo(Extra), Esq */
+    /* Topo: 15px | Lados: 15px | BAIXO: 85px (Segurança para Mobile) */
+    padding: 15px 15px 85px 15px; 
     text-align: center;
   }
-  .footer-text p { font-size: 12px; }
+  
+  /* Garante que a logo não fique gigante no celular */
+  .footer-logo-img { height: 40px; }
 }
