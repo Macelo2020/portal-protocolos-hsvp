@@ -1,7 +1,7 @@
 // src/paginas/PaginaHome.jsx
-// VERSÃO FINAL ESTÁVEL: Sem Loop Infinito e com Layout Correto.
+// VERSÃO 1.8.0: Dashboard de Contagens (Categorias + Total Geral)
 
-import { useState, useEffect } from 'react'; // Removemos useCallback para simplificar
+import { useState, useEffect } from 'react'; 
 import { useAuth } from '../contexto/AuthContext'; 
 import { useApiService } from '../services/apiService'; 
 import BotaoFavoritar from '../components/BotaoFavoritar'; 
@@ -13,6 +13,8 @@ function PaginaHome() {
 
   const [categorias, setCategorias] = useState([]);
   const [protocolos, setProtocolos] = useState([]); 
+  const [todosProtocolos, setTodosProtocolos] = useState([]); // Lista Mestra
+  
   const [favoritosDoUsuario, setFavoritosDoUsuario] = useState([]);
   const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
   const [termoDeBusca, setTermoDeBusca] = useState(''); 
@@ -21,21 +23,21 @@ function PaginaHome() {
   const { usuario } = useAuth();
   const { http, favoritos } = useApiService(); 
 
-  // --- 1. CARREGAR CATEGORIAS E PROTOCOLOS (Executa apenas 1 vez) ---
+  // --- 1. CARREGAR DADOS ---
   useEffect(() => {
-    // Carrega Categorias
     http.getPublic('categorias')
         .then(d => setCategorias(d))
         .catch(e => console.error("Erro categorias:", e));
 
-    // Carrega Protocolos
     http.getPublic('protocolos')
-        .then(d => setProtocolos(d))
+        .then(d => {
+            setProtocolos(d);       
+            setTodosProtocolos(d);  
+        })
         .catch(e => console.error("Erro protocolos:", e));
-  }, []); // Array vazio = roda só no início
+  }, []); 
 
-
-  // --- 2. CARREGAR FAVORITOS (Executa quando o usuário muda) ---
+  // --- 2. CARREGAR FAVORITOS ---
   useEffect(() => {
     if (usuario) {
         favoritos.listarMeus()
@@ -44,11 +46,9 @@ function PaginaHome() {
     } else {
         setFavoritosDoUsuario([]);
     }
-    // IMPORTANTE: Removemos 'favoritos' das dependências para evitar o loop
   }, [usuario]); 
 
-
-  // --- FUNÇÕES DE INTERAÇÃO ---
+  // --- FUNÇÕES ---
   const handleToggleFavoriteLocal = (protocoloId) => {
     if (favoritosDoUsuario.some(fav => fav.protocolo_id === protocoloId)) {
         setFavoritosDoUsuario(prev => prev.filter(fav => fav.protocolo_id !== protocoloId));
@@ -59,35 +59,48 @@ function PaginaHome() {
 
   const buscarProtocolosPorCategoria = (idDaCategoria, nomeDaCategoria) => {
     setCategoriaSelecionada(nomeDaCategoria);
-    // Filtramos localmente se já temos todos os protocolos, ou buscamos de novo
-    // Para simplificar e garantir, buscamos de novo filtrado:
-    http.getPublic('protocolos').then(dados => {
-        const filtrados = idDaCategoria ? dados.filter(p => p.categoria_id === idDaCategoria) : dados;
+    if (idDaCategoria) {
+        const filtrados = todosProtocolos.filter(p => p.categoria_id === idDaCategoria);
         setProtocolos(filtrados);
-    });
+    } else {
+        setProtocolos(todosProtocolos);
+    }
   };
 
   const buscarTodosProtocolos = () => {
     setCategoriaSelecionada(null);
-    http.getPublic('protocolos').then(d => setProtocolos(d));
+    setProtocolos(todosProtocolos); 
   };
 
-
   // --- FILTROS VISUAIS ---
-  const protocolosFiltrados = protocols => {
-      // Pequena proteção caso protocolos seja null
+  const protocolosFiltrados = () => {
       return (protocolos || []).filter(p => p.titulo.toLowerCase().includes(termoDeBusca.toLowerCase()));
   };
   
   const categoriasFiltradas = (categorias || []).filter(c => c.nome.toLowerCase().includes(termoBuscaCategoria.toLowerCase()));
 
-
   return (
     <main className="layout-principal">
         
-        {/* --- LADO ESQUERDO: CATEGORIAS --- */}
+        {/* --- LADO ESQUERDO: CATEGORIAS E DASHBOARD --- */}
         <aside className="painel-lateral">
-            <h3 style={{marginTop: 0}}>Categorias</h3>
+            
+            {/* [NOVO] CABEÇALHO DA LATERAL COM DASHBOARD */}
+            <div className="header-lateral-dashboard">
+                
+                {/* Bloco 1: Título Categorias + Bolinha */}
+                <div className="grupo-titulo-cat">
+                    <h3>Categorias</h3>
+                    <span className="badge-bolinha-azul">{categorias.length}</span>
+                </div>
+
+                {/* Bloco 2: Total Geral de Protocolos */}
+                <div className="grupo-total-geral">
+                    <span className="label-total">Total de Protocolos</span>
+                    <span className="badge-retangulo-azul">{todosProtocolos.length}</span>
+                </div>
+
+            </div>
             
             <input 
               type="text" 
@@ -99,30 +112,36 @@ function PaginaHome() {
             />
 
             <div className="grid-categorias-lateral">
-                {categoriasFiltradas.map(cat => (
-                    <div 
-                        key={cat.id} 
-                        className="card-2d-container"
-                        onClick={() => buscarProtocolosPorCategoria(cat.id, cat.nome)}
-                        role="button"
-                    >
-                        <div className="capa-wrapper-categoria" style={{ height: '120px' }}> 
-                          {cat.nome_imagem_capa ? (
-                              <img src={`${BACKEND_URL}/images/${cat.nome_imagem_capa}`} alt={cat.nome} className="imagem-capa-2d" />
-                          ) : (
-                              <div className="placeholder-capa-categoria">{cat.nome.charAt(0)}</div>
-                          )}
+                {categoriasFiltradas.map(cat => {
+                    const qtd = todosProtocolos.filter(p => p.categoria_id === cat.id).length;
+                    return (
+                        <div 
+                            key={cat.id} 
+                            className="card-2d-container"
+                            onClick={() => buscarProtocolosPorCategoria(cat.id, cat.nome)}
+                            role="button"
+                        >
+                            <div className="capa-wrapper-categoria" style={{ height: '120px' }}> 
+                              {cat.nome_imagem_capa ? (
+                                  <img src={`${BACKEND_URL}/images/${cat.nome_imagem_capa}`} alt={cat.nome} className="imagem-capa-2d" />
+                              ) : (
+                                  <div className="placeholder-capa-categoria">{cat.nome.charAt(0)}</div>
+                              )}
+                            </div>
+                            <p className="legenda-2d" style={{fontSize: '12px', marginBottom: '2px'}}>{cat.nome}</p>
+                            <span className="contador-categoria">
+                                {qtd} {qtd === 1 ? 'item' : 'itens'}
+                            </span>
                         </div>
-                        <p className="legenda-2d" style={{fontSize: '12px'}}>{cat.nome}</p>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </aside>
 
         {/* --- LADO DIREITO: PROTOCOLOS --- */}
         <section className="painel-principal">
             <div style={{marginBottom: '20px'}}>
-                <h2 className="titulo-secao" style={{marginTop: 0}}>
+                <h2 className="titulo-secao" style={{marginTop: 0, display: 'flex', alignItems: 'center', gap: '10px'}}>
                     {categoriaSelecionada ? `Protocolos de: ${categoriaSelecionada}` : 'Todos os Protocolos'}
                 </h2>
                 

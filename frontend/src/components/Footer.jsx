@@ -25,7 +25,7 @@ function Footer() {
                 Criação e desenvolvimento: <strong>Blue Frog Smart Solutions</strong>
             </p>
             <p className="footer-version">
-                Versão 1.7.1
+                Versão 1.8.0
             </p>
         </div>
 

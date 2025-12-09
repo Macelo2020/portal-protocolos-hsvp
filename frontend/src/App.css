@@ -322,6 +322,111 @@ main.layout-principal {
 .card-2d-link-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
 
 
+/* --- NOVOS CONTADORES E BADGES --- */
+
+/* 1. Badge do Total Geral (Cápsula Azul) */
+.badge-total {
+  background-color: #0056b3; /* Azul do Hospital */
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0, 86, 179, 0.3);
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* 2. Contador Pequeno na Categoria (Abaixo da Capa) */
+.contador-categoria {
+  font-size: 10px;
+  color: #64748b; /* Cinza discreto */
+  background-color: #e2e8f0; /* Fundo cinza claro */
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-top: 3px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+/* Ao passar o mouse no card, o contador fica azul */
+.card-2d-container:hover .contador-categoria {
+  background-color: #dbeafe;
+  color: #0056b3;
+}
+
+/* --- DASHBOARD NO CABEÇALHO LATERAL --- */
+
+.header-lateral-dashboard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Separa os grupos (Categorias na esq, Total na dir) */
+  margin-bottom: 20px;
+  flex-wrap: wrap; /* Garante que não quebre no mobile */
+  gap: 10px;
+}
+
+/* Grupo 1: Título e Bolinha */
+.grupo-titulo-cat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.grupo-titulo-cat h3 {
+  margin: 0;
+  color: #0056b3; /* Azul Hospital */
+  font-size: 18px;
+}
+
+.badge-bolinha-azul {
+  background-color: #0056b3;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%; /* Bolinha perfeita */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Grupo 2: Total Geral */
+.grupo-total-geral {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #e0f2fe; /* Fundo azulzinho claro para destacar o bloco */
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid #bae6fd;
+}
+
+.label-total {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0056b3;
+}
+
+.badge-retangulo-azul {
+  background-color: #0056b3;
+  color: white;
+  
+  /* AUMENTADO: Mais espaço interno */
+  padding: 4px 12px; 
+  
+  /* NOVO: Garante largura mínima para 3 dígitos */
+  min-width: 35px; 
+  text-align: center; /* Centraliza o número */
+  
+  border-radius: 6px; 
+  font-size: 14px; /* Fonte levemente maior */
+  font-weight: bold;
+  display: inline-block; /* Importante para o width funcionar */
+}
+
+
 /* --- 11. MOBILE --- */
 /* === 11. RESPONSIVIDADE (TELEMÓVEL < 768px) === */
 @media (max-width: 768px) {
