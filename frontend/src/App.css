@@ -337,16 +337,21 @@ main.layout-principal {
   vertical-align: middle;
 }
 
-/* 2. Contador Pequeno na Categoria (Abaixo da Capa) */
+/* 2. Contador Pequeno na Categoria */
 .contador-categoria {
-  font-size: 10px;
-  color: #64748b; /* Cinza discreto */
-  background-color: #e2e8f0; /* Fundo cinza claro */
-  padding: 2px 8px;
-  border-radius: 10px;
-  margin-top: 3px;
-  font-weight: 600;
+  /* AUMENTADO com !important para forçar a mudança */
+  font-size: 13px !important; 
+  
+  color: #0056b3; 
+  background-color: #dbeafe; 
+  
+  padding: 4px 10px; 
+  border-radius: 12px;
+  margin-top: 5px;
+  font-weight: 700 !important; /* Negrito forçado */
   transition: all 0.2s;
+  border: 1px solid #bfdbfe;
+  display: inline-block; /* Garante que respeite o padding */
 }
 
 /* Ao passar o mouse no card, o contador fica azul */

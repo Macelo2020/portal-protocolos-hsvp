@@ -1,5 +1,5 @@
 // src/paginas/PaginaHome.jsx
-// VERSÃO 1.8.0: Dashboard de Contagens (Categorias + Total Geral)
+// VERSÃO 1.8.1 FINAL: Corrigido e Otimizado
 
 import { useState, useEffect } from 'react'; 
 import { useAuth } from '../contexto/AuthContext'; 
@@ -85,21 +85,17 @@ function PaginaHome() {
         {/* --- LADO ESQUERDO: CATEGORIAS E DASHBOARD --- */}
         <aside className="painel-lateral">
             
-            {/* [NOVO] CABEÇALHO DA LATERAL COM DASHBOARD */}
+            {/* CABEÇALHO DA LATERAL COM DASHBOARD */}
             <div className="header-lateral-dashboard">
-                
-                {/* Bloco 1: Título Categorias + Bolinha */}
                 <div className="grupo-titulo-cat">
                     <h3>Categorias</h3>
                     <span className="badge-bolinha-azul">{categorias.length}</span>
                 </div>
 
-                {/* Bloco 2: Total Geral de Protocolos */}
                 <div className="grupo-total-geral">
                     <span className="label-total">Total de Protocolos</span>
                     <span className="badge-retangulo-azul">{todosProtocolos.length}</span>
                 </div>
-
             </div>
             
             <input 
@@ -172,13 +168,16 @@ function PaginaHome() {
                           className="card-2d-link"
                         >
                           <div className="card-2d-container">
+                            
+                            {/* IMAGEM DO PROTOCOLO (Com Capa Padrão) */}
                             <div className="capa-wrapper-protocolo">
                                 {protocolo.caminho_imagem_capa ? (
                                   <img src={`${BACKEND_URL}/images/${protocolo.caminho_imagem_capa}`} alt={protocolo.titulo} className="imagem-capa-2d" />
                                 ) : (
-                                  <div className="placeholder-capa-protocolo"></div> 
+                                  <img src="/portal/capa-padrao.png" alt="Capa Padrão" className="imagem-capa-2d" />
                                 )}
                             </div> 
+                            
                             <p className="legenda-2d">{protocolo.titulo}</p>
                           </div>
                         </a>
