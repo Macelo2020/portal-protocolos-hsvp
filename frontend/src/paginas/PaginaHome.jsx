@@ -1,5 +1,5 @@
 // src/paginas/PaginaHome.jsx
-// VERSÃO 1.8.1 FINAL: Corrigido e Otimizado
+// VERSÃO 3.0 FINAL: Original Restaurado + Correção de Imagens e Localhost
 
 import { useState, useEffect } from 'react'; 
 import { useAuth } from '../contexto/AuthContext'; 
@@ -9,11 +9,13 @@ import '../App.css';
 
 function PaginaHome() {
   
-  const BACKEND_URL = 'http://192.168.0.201:3001';
+  // [CORREÇÃO] Usamos localhost para garantir que as imagens carreguem no servidor
+  // Mude de localhost para o IP
+const BACKEND_URL = 'http://192.168.0.201:3001';
 
   const [categorias, setCategorias] = useState([]);
   const [protocolos, setProtocolos] = useState([]); 
-  const [todosProtocolos, setTodosProtocolos] = useState([]); // Lista Mestra
+  const [todosProtocolos, setTodosProtocolos] = useState([]); // Lista Mestra para filtro rápido
   
   const [favoritosDoUsuario, setFavoritosDoUsuario] = useState([]);
   const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
@@ -48,7 +50,17 @@ function PaginaHome() {
     }
   }, [usuario]); 
 
-  // --- FUNÇÕES ---
+  // --- FUNÇÕES AUXILIARES ---
+  
+  // [NOVO] Função Inteligente de Imagem
+  const getImageUrl = (caminho) => {
+    if (caminho && caminho !== '' && caminho !== 'null') {
+        return `${BACKEND_URL}/images/${caminho}`;
+    }
+    // Se for envio em massa (sem capa), usa a genérica
+    return `${BACKEND_URL}/images/capa_generica_protocolo.png`;
+  };
+
   const handleToggleFavoriteLocal = (protocoloId) => {
     if (favoritosDoUsuario.some(fav => fav.protocolo_id === protocoloId)) {
         setFavoritosDoUsuario(prev => prev.filter(fav => fav.protocolo_id !== protocoloId));
@@ -93,7 +105,7 @@ function PaginaHome() {
                 </div>
 
                 <div className="grupo-total-geral">
-                    <span className="label-total">Total de Protocolos</span>
+                    <span className="label-total">Total</span>
                     <span className="badge-retangulo-azul">{todosProtocolos.length}</span>
                 </div>
             </div>
@@ -118,6 +130,7 @@ function PaginaHome() {
                             role="button"
                         >
                             <div className="capa-wrapper-categoria" style={{ height: '120px' }}> 
+                              {/* [CORREÇÃO] Imagem da Categoria também usa o localhost */}
                               {cat.nome_imagem_capa ? (
                                   <img src={`${BACKEND_URL}/images/${cat.nome_imagem_capa}`} alt={cat.nome} className="imagem-capa-2d" />
                               ) : (
@@ -151,7 +164,7 @@ function PaginaHome() {
             </div>
             
             {categoriaSelecionada && (
-                <button className="btn-mostrar-todos" onClick={buscarTodosProtocolos} style={{marginBottom: 15}}>
+                <button className="btn-mostrar-todos" onClick={buscarTodosProtocolos} style={{marginBottom: 15, padding: '8px 15px', cursor: 'pointer'}}>
                     ← Voltar para Todos
                 </button>
             )}
@@ -169,18 +182,21 @@ function PaginaHome() {
                         >
                           <div className="card-2d-container">
                             
-                            {/* IMAGEM DO PROTOCOLO (Com Capa Padrão) */}
+                            {/* [CORREÇÃO] IMAGEM DO PROTOCOLO COM CAPA PADRÃO */}
                             <div className="capa-wrapper-protocolo">
-                                {protocolo.caminho_imagem_capa ? (
-                                  <img src={`${BACKEND_URL}/images/${protocolo.caminho_imagem_capa}`} alt={protocolo.titulo} className="imagem-capa-2d" />
-                                ) : (
-                                  <img src="/portal/capa-padrao.png" alt="Capa Padrão" className="imagem-capa-2d" />
-                                )}
+                                <img 
+                                    src={getImageUrl(protocolo.caminho_imagem_capa)} 
+                                    alt={protocolo.titulo} 
+                                    className="imagem-capa-2d"
+                                    onError={(e) => {e.target.src = `${BACKEND_URL}/images/capa_generica_protocolo.png`}}
+                                />
                             </div> 
                             
                             <p className="legenda-2d">{protocolo.titulo}</p>
                           </div>
                         </a>
+                        
+                        {/* BOTÃO DE FAVORITAR MANTIDO */}
                         <div style={{position:'absolute', top: 5, right: 15, zIndex: 10}}>
                             <BotaoFavoritar
                                 protocoloId={protocolo.id}

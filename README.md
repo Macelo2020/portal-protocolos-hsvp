@@ -2,63 +2,74 @@
 
 Sistema Full Stack desenvolvido para o **Hospital São Vicente de Paulo**, visando centralizar, organizar e facilitar o acesso aos protocolos operacionais padrão (POPs) por médicos e colaboradores via Computador e Dispositivos Móveis.
 
-![Status do Projeto](https://img.shields.io/badge/Versão-1.8.0-blue)
-![Status](https://img.shields.io/badge/Status-Em_Produção-green)
-![Tech](https://img.shields.io/badge/Style-Blue_Tech-0056b3)
+![Versão](https://img.shields.io/badge/Versão-2.0.0-blue)
+![Status](https://img.shields.io/badge/Status-Estável_em_Produção-green)
+![Tech](https://img.shields.io/badge/Infra-Node_PM2-orange)
 
 ## 📸 Visão Geral
 
-O sistema permite a gestão completa de categorias e protocolos (PDFs), com uma interface moderna, responsiva e focada na usabilidade hospitalar. A versão atual conta com um **Dashboard Gerencial** integrado.
+O sistema permite a gestão completa de categorias e protocolos (PDFs), com uma interface moderna e acesso via **Rede Local**.
 
-### ✨ Novidades da Versão 1.8.0
-* **Dashboard de Métricas:** Visualização em tempo real do total de protocolos e contagem por categoria na barra lateral.
-* **Badges Inteligentes:** Indicadores numéricos visuais para facilitar a navegação.
-* **Visual "Blue Tech":** Redesign completo da interface (Cabeçalho degradê, Rodapé compacto e cores institucionais).
-* **Acessibilidade:** Melhoria no contraste de fontes e tamanhos de ícones.
+### ✨ Novidades da Versão 2.0.0 (Stable)
+* **Acesso em Rede:** Sistema liberado para acesso via IP (`192.168.0.201`) em qualquer máquina do hospital.
+* **Servidor Blindado (PM2):** O Backend roda como serviço do Windows (background), garantindo estabilidade 24/7.
+* **Upload Robusto:** Suporte para arquivos grandes (**50MB**) e higienização automática de nomes de arquivos.
+* **Gestão Inteligente:** Exclusão de protocolos com limpeza automática de vínculos (Favoritos) para evitar erros.
+* **Banco de Dados:** Correção de charset para aceitar títulos longos e caracteres especiais.
 
 ### Funcionalidades Principais
-* **Painel de Leitura:** Layout dividido (Sidebar com Dashboard + Conteúdo) para fácil navegação.
-* **Responsividade:** Interface adaptada para telemóveis com scroll horizontal e botões táteis.
+* **Painel de Leitura:** Layout dividido (Sidebar com Dashboard + Conteúdo).
+* **Responsividade:** Interface adaptada para telemóveis e tablets.
 * **Favoritos:** Sistema de favoritos pessoal por utilizador.
 * **Admin:** Painel administrativo para upload de capas, PDFs e gestão de categorias.
-* **Segurança:** Autenticação via Token JWT e rotas protegidas.
+* **Segurança:** Autenticação via Token JWT, controle de IP e rotas protegidas.
 
 ## 🛠️ Tecnologias Utilizadas
 
 * **Frontend:** React.js + Vite (Single Page Application)
-* **Backend:** Node.js + Express
-* **Banco de Dados:** MySQL (XAMPP)
-* **Infraestrutura:** Servidor Apache (Deploy) + Serviço Windows (Backend)
+* **Backend:** Node.js + Express (Porta 3001)
+* **Banco de Dados:** MySQL (XAMPP/MariaDB)
+* **Gerenciador de Processos:** PM2 (Windows Service)
 
-## 🚀 Como Rodar o Projeto
+---
+
+## 📋 Guia de Manutenção do Servidor (Backend)
+
+Como o sistema roda via **PM2**, não é necessário manter janelas abertas. Use os comandos abaixo no terminal (PowerShell ou VSCode) para manutenção:
+
+| Ação | Comando |
+| :--- | :--- |
+| **Verificar Status** | `pm2 list` |
+| **Ver Logs (Erros)** | `pm2 logs` |
+| **Reiniciar Servidor** | `pm2 restart backend-portal` |
+| **Parar Servidor** | `pm2 stop backend-portal` |
+
+---
+
+## 🚀 Instalação e Execução
 
 ### Pré-requisitos
 * Node.js instalado
 * XAMPP (MySQL rodando na porta 3306)
+* PM2 instalado globalmente (`npm install -g pm2`)
 
-### Instalação
+### Passos para Rodar
 
-1.  **Clone o repositório:**
-    ```bash
-    git clone [https://github.com/Macelo2020/portal-protocolos-hsvp.git](https://github.com/Macelo2020/portal-protocolos-hsvp.git)
-    ```
+1.  **Banco de Dados:**
+    * Certifique-se que o XAMPP (MySQL) está ligado.
 
-2.  **Configurar o Banco de Dados:**
-    * Importe o arquivo `backup_inicial.sql` (se disponível) no phpMyAdmin.
-    * Ou crie um banco chamado `portal_protocolos`.
-
-3.  **Backend:**
+2.  **Backend (Servidor):**
     ```bash
     cd backend
-    npm install
-    node index.js
+    pm2 start index.js --name "backend-portal"
+    # O servidor iniciará em background na porta 3001
     ```
 
-4.  **Frontend:**
+3.  **Frontend (Atualização do Site):**
     ```bash
     cd frontend
-    npm install
-    npm run dev
+    npm run build
+    # Copie o conteúdo da pasta 'dist' para 'C:\xampp\htdocs\Portal'
     ```
 
 ## 👤 Autor
