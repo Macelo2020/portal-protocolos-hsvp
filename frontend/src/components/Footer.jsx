@@ -13,7 +13,7 @@ function Footer() {
         {/* 1. Logo do Desenvolvedor */}
         <div className="footer-logo-section">
             {/* Certifique-se de colocar a imagem na pasta public */}
-            <img src="/portal/logo-bluefrog.png" alt="Blue Frog Smart Solutions" className="footer-logo-img" />
+            <img src="/logo-bluefrog.png" alt="Blue Frog Smart Solutions" className="footer-logo-img" />
         </div>
 
         {/* 2. Textos Legais */}
@@ -25,7 +25,7 @@ function Footer() {
                 Criação e desenvolvimento: <strong>Blue Frog Smart Solutions</strong>
             </p>
             <p className="footer-version">
-                Versão 2.0.0
+                Versão 3.1.0
             </p>
         </div>
 

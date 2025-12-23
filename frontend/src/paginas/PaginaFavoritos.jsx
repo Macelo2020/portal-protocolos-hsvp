@@ -1,17 +1,16 @@
 // src/paginas/PaginaFavoritos.jsx
-// VERSÃO 4.0 (FINAL): Seu código original + Correção de Imagens e Localhost
+// VERSÃO 4.1: IP Fixo Removido
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexto/AuthContext';
-import { useApiService } from '../services/apiService'; 
+// 1. IMPORTAMOS AS CONSTANTES
+import { useApiService, IMAGES_URL, PDFS_URL } from '../services/apiService'; 
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
 
 function PaginaFavoritos() {
     
-    // [CORREÇÃO 1] Usamos localhost para garantir que as imagens carreguem
-    // Mude de localhost para o IP
-const BACKEND_URL = 'http://192.168.0.201:3001';
+    // 2. REMOVIDO: const BACKEND_URL = ...
 
     const { usuario } = useAuth();
     const navigate = useNavigate();
@@ -21,7 +20,6 @@ const BACKEND_URL = 'http://192.168.0.201:3001';
     const [isLoading, setIsLoading] = useState(true);
     const [erro, setErro] = useState(null);
 
-    // --- EFEITO PARA CARREGAR DADOS ---
     useEffect(() => {
         if (!usuario) { 
             setIsLoading(false); 
@@ -44,16 +42,14 @@ const BACKEND_URL = 'http://192.168.0.201:3001';
 
     }, [usuario]); 
 
-    // --- FUNÇÃO AUXILIAR DE IMAGEM (A Mágica) ---
+    // 3. FUNÇÃO ATUALIZADA
     const getImageUrl = (caminho) => {
         if (caminho && caminho !== '' && caminho !== 'null') {
-            return `${BACKEND_URL}/images/${caminho}`;
+            return `${IMAGES_URL}/${caminho}`;
         }
-        // Se não tiver capa, usa a genérica da pasta images
-        return `${BACKEND_URL}/images/capa_generica_protocolo.png`;
+        return `${IMAGES_URL}/capa_generica_protocolo.png`;
     };
 
-    // --- FUNÇÃO DE REMOVER ---
     const handleRemoverFavorito = async (e, protocoloId, titulo) => {
         e.preventDefault(); e.stopPropagation();
         
@@ -67,7 +63,6 @@ const BACKEND_URL = 'http://192.168.0.201:3001';
         }
     };
     
-    // --- RENDERIZAÇÃO (Telas de Carregamento/Erro/Vazio) ---
     if (isLoading) return <div className="conteudo-pagina" style={{padding:30, textAlign:'center'}}>Carregando favoritos...</div>;
     if (erro) return <div className="conteudo-pagina" style={{padding:30, color:'red'}}>{erro}</div>;
     if (!usuario) return <div className="conteudo-pagina" style={{padding:30}}>Faça login para ver seus favoritos.</div>;
@@ -82,7 +77,6 @@ const BACKEND_URL = 'http://192.168.0.201:3001';
         );
     }
 
-    // --- TELA PRINCIPAL DOS FAVORITOS ---
     return (
         <div className="conteudo-pagina" style={{padding: '20px 30px'}}>
             <h2 style={{marginTop:0, marginBottom:25}}>Meus Favoritos ⭐</h2>
@@ -90,21 +84,22 @@ const BACKEND_URL = 'http://192.168.0.201:3001';
             <div className="grid-container-protocolos">
                 {favoritosLista.map((protocolo) => (
                   <div key={protocolo.favorito_id ? `fav-${protocolo.favorito_id}` : `proto-${protocolo.id}`} style={{position:'relative'}}>
+                    {/* 4. USO DE PDFS_URL */}
                     <a 
-                      href={`${BACKEND_URL}/pdfs/${protocolo.nome_arquivo_pdf}`} 
+                      href={`${PDFS_URL}/${protocolo.nome_arquivo_pdf}`} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="card-2d-link"
                     >
                       <div className="card-2d-container">
                           
-                          {/* [CORREÇÃO 2] Bloco de Imagem Inteligente */}
                           <div className="capa-wrapper-protocolo">
+                              {/* 5. USO DE IMAGES_URL (via getImageUrl e onError) */}
                               <img 
                                 src={getImageUrl(protocolo.caminho_imagem_capa)} 
                                 alt={protocolo.titulo} 
                                 className="imagem-capa-2d" 
-                                onError={(e) => {e.target.src = `${BACKEND_URL}/images/capa_generica_protocolo.png`}}
+                                onError={(e) => {e.target.src = `${IMAGES_URL}/capa_generica_protocolo.png`}}
                               />
                           </div> 
                           
@@ -112,7 +107,6 @@ const BACKEND_URL = 'http://192.168.0.201:3001';
                       </div>
                     </a>
                     
-                    {/* Botão X Vermelho (Mantido do seu código original) */}
                     <button 
                         className="btn-remover-favorito"
                         title="Remover dos favoritos"

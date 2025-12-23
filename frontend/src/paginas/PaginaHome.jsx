@@ -1,21 +1,17 @@
 // src/paginas/PaginaHome.jsx
-// VERSÃO 3.0 FINAL: Original Restaurado + Correção de Imagens e Localhost
+// VERSÃO 3.2: Com Botão "Voltar" Moderno e Layout Ajustado
 
 import { useState, useEffect } from 'react'; 
 import { useAuth } from '../contexto/AuthContext'; 
-import { useApiService } from '../services/apiService'; 
+import { useApiService, IMAGES_URL, PDFS_URL } from '../services/apiService'; 
 import BotaoFavoritar from '../components/BotaoFavoritar'; 
 import '../App.css'; 
 
 function PaginaHome() {
   
-  // [CORREÇÃO] Usamos localhost para garantir que as imagens carreguem no servidor
-  // Mude de localhost para o IP
-const BACKEND_URL = 'http://192.168.0.201:3001';
-
   const [categorias, setCategorias] = useState([]);
   const [protocolos, setProtocolos] = useState([]); 
-  const [todosProtocolos, setTodosProtocolos] = useState([]); // Lista Mestra para filtro rápido
+  const [todosProtocolos, setTodosProtocolos] = useState([]); 
   
   const [favoritosDoUsuario, setFavoritosDoUsuario] = useState([]);
   const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
@@ -51,14 +47,11 @@ const BACKEND_URL = 'http://192.168.0.201:3001';
   }, [usuario]); 
 
   // --- FUNÇÕES AUXILIARES ---
-  
-  // [NOVO] Função Inteligente de Imagem
   const getImageUrl = (caminho) => {
     if (caminho && caminho !== '' && caminho !== 'null') {
-        return `${BACKEND_URL}/images/${caminho}`;
+        return `${IMAGES_URL}/${caminho}`;
     }
-    // Se for envio em massa (sem capa), usa a genérica
-    return `${BACKEND_URL}/images/capa_generica_protocolo.png`;
+    return `${IMAGES_URL}/capa_generica_protocolo.png`;
   };
 
   const handleToggleFavoriteLocal = (protocoloId) => {
@@ -97,7 +90,6 @@ const BACKEND_URL = 'http://192.168.0.201:3001';
         {/* --- LADO ESQUERDO: CATEGORIAS E DASHBOARD --- */}
         <aside className="painel-lateral">
             
-            {/* CABEÇALHO DA LATERAL COM DASHBOARD */}
             <div className="header-lateral-dashboard">
                 <div className="grupo-titulo-cat">
                     <h3>Categorias</h3>
@@ -130,9 +122,8 @@ const BACKEND_URL = 'http://192.168.0.201:3001';
                             role="button"
                         >
                             <div className="capa-wrapper-categoria" style={{ height: '120px' }}> 
-                              {/* [CORREÇÃO] Imagem da Categoria também usa o localhost */}
                               {cat.nome_imagem_capa ? (
-                                  <img src={`${BACKEND_URL}/images/${cat.nome_imagem_capa}`} alt={cat.nome} className="imagem-capa-2d" />
+                                  <img src={`${IMAGES_URL}/${cat.nome_imagem_capa}`} alt={cat.nome} className="imagem-capa-2d" />
                               ) : (
                                   <div className="placeholder-capa-categoria">{cat.nome.charAt(0)}</div>
                               )}
@@ -163,8 +154,9 @@ const BACKEND_URL = 'http://192.168.0.201:3001';
                 />
             </div>
             
+            {/* --- BOTÃO VOLTAR (MODERNO) --- */}
             {categoriaSelecionada && (
-                <button className="btn-mostrar-todos" onClick={buscarTodosProtocolos} style={{marginBottom: 15, padding: '8px 15px', cursor: 'pointer'}}>
+                <button className="btn-voltar-todos" onClick={buscarTodosProtocolos}>
                     ← Voltar para Todos
                 </button>
             )}
@@ -175,20 +167,19 @@ const BACKEND_URL = 'http://192.168.0.201:3001';
                     return (
                       <div key={protocolo.id} style={{position:'relative'}}>
                         <a 
-                          href={`${BACKEND_URL}/pdfs/${protocolo.nome_arquivo_pdf}`} 
+                          href={`${PDFS_URL}/${protocolo.nome_arquivo_pdf}`} 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="card-2d-link"
                         >
                           <div className="card-2d-container">
                             
-                            {/* [CORREÇÃO] IMAGEM DO PROTOCOLO COM CAPA PADRÃO */}
                             <div className="capa-wrapper-protocolo">
                                 <img 
                                     src={getImageUrl(protocolo.caminho_imagem_capa)} 
                                     alt={protocolo.titulo} 
                                     className="imagem-capa-2d"
-                                    onError={(e) => {e.target.src = `${BACKEND_URL}/images/capa_generica_protocolo.png`}}
+                                    onError={(e) => {e.target.src = `${IMAGES_URL}/capa_generica_protocolo.png`}}
                                 />
                             </div> 
                             
@@ -196,7 +187,6 @@ const BACKEND_URL = 'http://192.168.0.201:3001';
                           </div>
                         </a>
                         
-                        {/* BOTÃO DE FAVORITAR MANTIDO */}
                         <div style={{position:'absolute', top: 5, right: 15, zIndex: 10}}>
                             <BotaoFavoritar
                                 protocoloId={protocolo.id}

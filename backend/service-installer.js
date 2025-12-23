@@ -1,30 +1,34 @@
-// service-installer.js
-// Script para instalar o serviço do Windows
+// service-installer.js (Versão Corrigida v11.0)
 const svc = require('node-windows').Service;
+const path = require('path'); // Importar path para gerenciar caminhos
 
-// Define o caminho para o seu node.js e o script de inicialização
+// Cria o objeto do serviço
 const service = new svc({
-  name: 'PortalProtocolosHSVP', // Nome do serviço no Windows
+  name: 'PortalProtocolosHSVP',
   description: 'Servidor Node.js para o Portal de Protocolos do Hospital.',
-  // (CORRIGIDO!) O caminho correto para o seu usuário (com barras duplas)
-  script: 'C:\\Users\\marcelo.santos\\Documents\\portal-protocolos\\backend\\index.js',
+  // USAR CAMINHO DINÂMICO (Funciona em qualquer pasta/usuário)
+  script: path.join(__dirname, 'index.js'), 
   nodeOptions: [
     '--harmony',
-    '--max_old_space_size=4096' // Aloca mais memória (4GB)
+    '--max_old_space_size=4096' // 4GB de RAM
   ]
 });
 
-// Listener para quando o serviço for instalado
-service.on('install',function(){
+// Eventos
+service.on('install', function(){
   service.start();
-  console.log("Serviço instalado com sucesso e iniciado!");
+  console.log('✅ Serviço instalado e iniciado com sucesso!');
+  console.log('📍 Caminho do script:', path.join(__dirname, 'index.js'));
 });
 
-// Listener para quando o serviço for removido
-service.on('uninstall',function(){
-  console.log('Serviço desinstalado.');
-  console.log('O Portal Protocolos HSVP foi removido da inicialização automática.');
+service.on('alreadyinstalled', function(){
+  console.log('⚠️ Este serviço já está instalado.');
+  service.start();
 });
 
-// Instala o serviço
+service.on('start', function(){
+  console.log('🚀 O servidor está rodando na porta 3001.');
+});
+
+// Instalação
 service.install();

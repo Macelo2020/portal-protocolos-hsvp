@@ -1,10 +1,12 @@
 // src/paginas/PaginaLogin.jsx
-// VERSÃO FINAL: Com IP Fixo e Layout Centralizado.
+// VERSÃO FINAL: IP Fixo Removido (Usa API_BASE_URL)
 
 import { useState } from 'react';
 import '../App.css';
 import { useAuth } from '../contexto/AuthContext';
 import { useNavigate } from 'react-router-dom';
+// 1. IMPORTAMOS A URL BASE DINÂMICA
+import { API_BASE_URL } from '../services/apiService';
 
 function PaginaLogin() {
   
@@ -13,13 +15,14 @@ function PaginaLogin() {
   const { login } = useAuth(); 
   const navigate = useNavigate();
 
-  const API_URL = 'http://192.168.0.201:3001/api/login';
+  // 2. REMOVIDO: const API_URL = ... (Não usamos mais fixo)
 
   const handleLogin = (evento) => {
     evento.preventDefault(); 
     if (!username || !password) return alert('Preencha todos os campos.');
 
-    fetch(API_URL, { 
+    // 3. USAMOS A URL DINÂMICA
+    fetch(`${API_BASE_URL}/login`, { 
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -31,8 +34,9 @@ function PaginaLogin() {
     })
     .catch(async (erro) => {
         let msg = "Erro ao conectar.";
+        // Proteção extra caso o erro não seja JSON (ex: servidor desligado)
         if (erro.json) {
-            const body = await erro.json();
+            const body = await erro.json().catch(() => ({}));
             msg = body.error || msg;
         }
         alert(msg);

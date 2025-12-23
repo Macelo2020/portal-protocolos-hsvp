@@ -1,26 +1,23 @@
 // src/AdminCategorias.jsx
-// (VERSÃO FINAL COMPLETA: Create, Read, Update, Delete + Visual Novo)
+// VERSÃO FINAL CORRIGIDA: Sem IP Fixo
 
 import { useState } from 'react';
-import { useApiService } from './services/apiService';
+// 1. IMPORTAÇÃO CORRETA
+import { useApiService, IMAGES_URL } from './services/apiService';
 
 function AdminCategorias({ categorias, recarregarCategorias }) {
 
-  // URL para carregar as imagens do servidor
-  const BACKEND_URL = 'http://192.168.0.201:3001';
+  // 2. REMOVIDO: const BACKEND_URL = ...
   
   const { apiFetch } = useApiService();
 
-  // --- Estados do Formulário de CRIAR ---
   const [novoNome, setNovoNome] = useState('');
   const [novaImagem, setNovaImagem] = useState(null); 
 
-  // --- Estados do Formulário de EDITAR ---
   const [idEditando, setIdEditando] = useState(null); 
   const [nomeEditando, setNomeEditando] = useState('');
   const [novaImagemEditando, setNovaImagemEditando] = useState(null);
 
-  // --- Função (C)REATE ---
   const handleCriarCategoria = (evento) => {
     evento.preventDefault(); 
     if (!novoNome) return alert('Por favor, preencha o Nome da categoria.');
@@ -37,7 +34,6 @@ function AdminCategorias({ categorias, recarregarCategorias }) {
     .catch(error => alert(`Erro: ${error.message}`));
   };
 
-  // --- Função (U)PDATE ---
   const handleSalvarEdicao = (evento, idDaCategoria) => {
     evento.preventDefault(); 
     
@@ -61,7 +57,6 @@ function AdminCategorias({ categorias, recarregarCategorias }) {
     setIdEditando(null); setNomeEditando(''); setNovaImagemEditando(null);
   };
 
-  // --- Função (D)ELETE ---
   const handleDeletarCategoria = (id, nome) => {
     if (!window.confirm(`Tem certeza que deseja deletar a categoria "${nome}"?`)) return;
 
@@ -70,12 +65,10 @@ function AdminCategorias({ categorias, recarregarCategorias }) {
     .catch(e => alert(e.message));
   };
 
-  // --- O HTML (Visual) ---
   return (
     <div className="admin-painel">
       <h2>Gerenciar Categorias</h2>
       
-      {/* Formulário Novo (Lado a Lado) */}
       <form onSubmit={handleCriarCategoria} className="admin-form">
         <h3>Adicionar Nova Categoria</h3>
         
@@ -105,7 +98,6 @@ function AdminCategorias({ categorias, recarregarCategorias }) {
         {categorias.map(cat => (
           <li key={cat.id}>
             {idEditando === cat.id ? (
-              // MODO EDIÇÃO
               <form onSubmit={(e) => handleSalvarEdicao(e, cat.id)} className="admin-form-editar-categoria">
                 <input 
                   type="text" 
@@ -123,13 +115,12 @@ function AdminCategorias({ categorias, recarregarCategorias }) {
                 <button type="button" className="btn-cancelar" onClick={handleCancelarEdicao}>Cancelar</button>
               </form>
             ) : (
-              // MODO VISUALIZAÇÃO
               <>
                 <div style={{display:'flex', alignItems:'center'}}>
                    {cat.nome_imagem_capa ? (
-                     // CORREÇÃO: Usa BACKEND_URL
+                     // 3. USO DE IMAGES_URL
                      <img 
-                       src={`${BACKEND_URL}/images/${cat.nome_imagem_capa}`} 
+                       src={`${IMAGES_URL}/${cat.nome_imagem_capa}`} 
                        alt={cat.nome} 
                        className="admin-capa-thumbnail"
                      />

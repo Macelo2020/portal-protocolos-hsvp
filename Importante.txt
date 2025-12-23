@@ -1,46 +1,48 @@
-Toda Vez que alterar o código do portal de protocolos 
+⚠️ LEIA COM ATENÇÃO - GUIA DE DESENVOLVIMENTO v3.0 ⚠️
 
+Este projeto foi migrado para a arquitetura "Unified Server" (Node.js serve tudo).
+NÃO COPIE MAIS ARQUIVOS PARA O XAMPP/HTDOCS MANUALMENTE!
 
-Seguir os passos:
+----------------------------------------------------------------------
+COMO ATUALIZAR O SISTEMA (DEPLOY)
+----------------------------------------------------------------------
 
-Se no futuro precisares de fazer manutenção ou adicionar novas funcionalidades, já sabes o caminho:
+1. Faça suas alterações no código (Frontend ou Backend).
+2. Salve os arquivos.
+3. Vá na pasta raiz do projeto.
+4. Execute o arquivo: DEPLOY_AUTOMATICO.bat
 
-Visual: frontend/src/App.css e PaginaHome.jsx.
+O que esse script faz sozinho?
+[1] Compila o React (npm run build).
+[2] Limpa a pasta pública do servidor (mantendo os uploads seguros).
+[3] Copia o novo site para dentro do Backend.
+[4] Reinicia o serviço no Windows (PM2).
 
-Lógica: backend/index.js ou os componentes do React.
+----------------------------------------------------------------------
+COMO FAZER BACKUP (SEGURANÇA) - FAÇA ISSO REGULARMENTE!
+----------------------------------------------------------------------
+Antes de qualquer alteração grande, garanta a segurança dos dados.
 
-Deploy: npm run build e copiar para o XAMPP.
+1. Execute o arquivo: BACKUP_TOTAL_V3.bat
+2. Verifique se a pasta foi criada em E:\BlueFrog\Backups_Portal
 
+Isso salva TUDO (Banco de Dados + Códigos + PDFs + Imagens).
 
+----------------------------------------------------------------------
+ONDE ESTÃO AS COISAS AGORA?
+----------------------------------------------------------------------
 
-Terminal do VScode
+- Código do Site:   /frontend/src
+- Código da API:    /backend/index.js
+- Imagens/PDFs:     /backend/public  (É aqui que os uploads ficam salvos!)
+- Banco de Dados:   MySQL do XAMPP (Porta 3306)
 
-Passo 1: Refazer o Build (Gerar o Pacote Novo) 📦
-Como alterámos o código, precisamos gerar a pasta dist novamente.
+----------------------------------------------------------------------
+DÚVIDAS TÉCNICAS
+----------------------------------------------------------------------
+Se o site não abrir:
+1. Abra o PowerShell como Admin.
+2. Digite: pm2 list (Veja se está online).
+3. Digite: pm2 logs (Para ver erros).
 
-No VS Code, abre o terminal (Ctrl + ').
-
-Roda o comando:
-
-Bash
-
-npm run build
-
-
-Passo 2: Atualizar o XAMPP 🔄
-Agora vamos colocar os arquivos novos no servidor.
-
-Vai à pasta C:\xampp\htdocs\portal.
-
-APAGA tudo o que está lá dentro (exceto o arquivo .htaccess se ele estiver lá. Se apagares o .htaccess, teremos de criá-lo de novo, o que é rápido).
-
-Vai à pasta do teu projeto: frontend/dist.
-
-Copia tudo o que está dentro da dist.
-
-Cola dentro de C:\xampp\htdocs\portal.
-
-
-Passo 4: Verificar o .htaccess (Muito Importante!)
-
-Teste Final: Agora atualiza a página no navegador (192.168.0.201/portal). O conteúdo do meio deve aparecer magicamente! ✨
+Ass: Marcelo Santos 🐸💙

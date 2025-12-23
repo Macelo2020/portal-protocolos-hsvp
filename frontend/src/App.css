@@ -1,4 +1,4 @@
-/* Professor de Programação: App.css (VERSÃO FINAL 8.0 - Lateral Maior + Scroll Admin Resolvido) */
+/* Professor de Programação: App.css (VERSÃO 9.0 - Visual Moderno + Glow) */
 
 /* --- 1. GERAL E RESET --- */
 body { 
@@ -17,15 +17,12 @@ body {
   overflow: hidden;
 }
 
-/* --- 2. CABEÇALHO (Ajustado: Maior e Mais Visível) --- */
+/* --- 2. CABEÇALHO (Ajustado) --- */
 .app-header {
   display: flex; align-items: center;
   background: linear-gradient(135deg, #004a9f, #003370); 
   box-shadow: 0 4px 15px rgba(0, 50, 120, 0.3);
-  
-  /* AUMENTADO: Mais espaço vertical (era 15px) */
   padding: 25px 35px; 
-  
   z-index: 100;
   flex-shrink: 0; 
   box-sizing: border-box;
@@ -34,42 +31,35 @@ body {
 }
 
 .header-logo { 
-  /* AUMENTADO: Logo maior (era 48px) */
   height: 70px; 
   margin-right: 20px; 
   transition: transform 0.3s;
 }
 .header-logo:hover { transform: scale(1.05); }
 
-/* TEXTOS DO TÍTULO */
 .header-texto h1 { 
   margin: 0; 
-  /* AUMENTADO: Fonte do Título maior (era 22px) */
   font-size: 32px; 
-  
   color: #ffffff; 
   font-weight: 700; 
   text-shadow: 0 2px 4px rgba(0,0,0,0.2); 
-  line-height: 1.1; /* Melhora o espaçamento entre linhas */
+  line-height: 1.1; 
 }
 .header-texto h2 { 
-  margin: 5px 0 0 0; /* Um pouco de espaço do título */
+  margin: 5px 0 0 0; 
   font-size: 14px; font-weight: 500; 
   color: rgba(255, 255, 255, 0.9); 
   text-transform: uppercase; letter-spacing: 1px;
 }
 
-/* LINKS DE NAVEGAÇÃO */
 .header-nav { margin-left: auto; display: flex; gap: 12px; align-items: center; }
 
 .header-nav a { 
   text-decoration: none; 
-  color: white; /* Texto Branco */
+  color: white; 
   font-weight: 600; font-size: 14px; 
   padding: 8px 18px; 
   border-radius: 20px; 
-  
-  /* Fundo translúcido (efeito vidro sobre o azul) */
   background-color: rgba(255, 255, 255, 0.15); 
   border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s; 
@@ -77,61 +67,47 @@ body {
 
 .header-nav a:hover { 
   background-color: white; 
-  color: #003370; /* Texto vira azul ao passar o mouse */
+  color: #003370; 
   transform: translateY(-2px);
 }
 
-/* BOTÃO DE SAIR */
 .btn-logout { 
-  background-color: #ef4444; /* Vermelho */
+  background-color: #ef4444; 
   color: white; border: none; padding: 8px 18px; border-radius: 20px; 
   font-weight: 600; cursor: pointer; 
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 .btn-logout:hover { background-color: #dc2626; }
 
-
-
-
 /* --- 3. ESTRUTURA DO LAYOUT --- */
 .conteudo-pagina { 
   max-width: 100%; 
   padding: 0;
-  flex: 1; /* Ocupa todo o espaço livre no meio */
+  flex: 1; 
   position: relative;
   min-height: 0; 
-  
-  /* [CORREÇÃO CRÍTICA DO RODAPÉ] */
-  /* Mudamos de 'hidden' para 'auto'. Isso permite que o Admin role a tela se a lista for grande. */
   overflow-y: auto; 
 } 
 
 main.layout-principal {
   display: grid;
-  /* [CORREÇÃO DA LATERAL] Aumentado para 480px para as 4 colunas caberem bem */
   grid-template-columns: 480px 1fr; 
-  
-  /* A Home continua a ocupar 100% e gerir o seu próprio scroll */
   height: 100%; 
   overflow: hidden; 
 }
 
-/* Painéis da Home */
 .painel-lateral {
-  background-color: #f0fdf4; /* Verde Claro */
+  background-color: #f0fdf4; 
   padding: 15px; 
-  border-right: 1px solid #dcfce7; /* Borda verde suave */
+  border-right: 1px solid #dcfce7; 
   overflow-y: auto; 
 }
 
-/* Painel Direito (Protocolos) */
 .painel-principal {
-  /* Mudamos de cinza para este Azul Gelo muito suave */
   background-color: #f0f8ff; 
   padding: 20px; 
   overflow-y: auto; 
 }
-
 
 /* --- 4. CAIXAS DE BUSCA --- */
 .barra-busca, .barra-busca-pequena {
@@ -141,9 +117,7 @@ main.layout-principal {
 }
 .barra-busca:focus, .barra-busca-pequena:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
 
-
 /* --- 5. GRIDS --- */
-/* Protocolos: 10 Colunas */
 .grid-container-protocolos {
   display: grid;
   grid-template-columns: repeat(10, 1fr); 
@@ -151,29 +125,40 @@ main.layout-principal {
   align-items: start;
 }
 
-/* Categorias: 4 Colunas */
 .grid-categorias-lateral {
   display: grid;
   grid-template-columns: repeat(4, 1fr); 
-  gap: 10px; /* Um pouco mais de espaço entre elas */
+  gap: 10px; 
 }
 
-/* Admin: Flexível */
 .grid-categorias-4col {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 30px 20px;
 }
 
-
-/* --- 6. CARDS (LIVROS) --- */
+/* --- 6. CARDS (LIVROS) - COM NOVO EFEITO GLOW/HOVER --- */
 .card-2d-container {
   display: flex; flex-direction: column; align-items: center;
-  cursor: pointer; transition: transform 0.2s ease;
+  cursor: pointer; 
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Animação mais suave */
   position: relative; 
+  border-radius: 6px; /* Para o brilho seguir a borda */
 }
+
 .card-2d-link { text-decoration: none; color: inherit; display: block; }
-.card-2d-container:hover { transform: translateY(-5px); }
+
+/* EFEITO DE LEVITAÇÃO E BRILHO AO PASSAR O MOUSE */
+.card-2d-container:hover { 
+  transform: translateY(-8px) scale(1.02); /* Flutua e cresce */
+  z-index: 10;
+}
+
+.card-2d-container:hover .capa-wrapper-categoria,
+.card-2d-container:hover .capa-wrapper-protocolo {
+  box-shadow: 0 15px 30px rgba(2, 132, 199, 0.25); /* Sombra azulada */
+  border: 2px solid #3b82f6; /* Borda acende */
+}
 
 /* Molduras */
 .capa-wrapper-categoria, .capa-wrapper-protocolo {
@@ -184,16 +169,21 @@ main.layout-principal {
   overflow: hidden;
   background-color: #fff;
   display: flex; align-items: center; justify-content: center;
+  border: 2px solid transparent; /* Espaço invisível para a borda não pular */
+  transition: all 0.3s ease;
 }
 
-/* Alturas */
 .capa-wrapper-categoria { height: 140px; } 
 .capa-wrapper-protocolo { height: 160px; } 
 
-/* Imagens INTEIRAS (contain) */
 .capa-wrapper-categoria .imagem-capa-2d,
 .capa-wrapper-protocolo .imagem-capa-2d {
   width: 100%; height: 100%; object-fit: contain; padding: 3px; 
+  transition: filter 0.3s ease;
+}
+
+.card-2d-container:hover img {
+  filter: brightness(1.08); /* Imagem fica mais viva */
 }
 
 /* Placeholders */
@@ -205,36 +195,28 @@ main.layout-principal {
 }
 .placeholder-capa-protocolo { height: 100%; width: 100%; background-color: #6b7280; }
 
-/* Legendas */
 .legenda-2d {
   text-align: center; font-weight: 600; font-size: 11px; margin: 5px 0 0 0;
   color: #374151; line-height: 1.2; word-wrap: break-word;
 }
 .contagem-2d { font-size: 10px; color: #6b7280; margin-top: 1px; text-align: center; display: block; }
 
-
 /* --- 7. ADMIN (FORMULÁRIO ALINHADO) --- */
 .admin-painel { background-color: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 25px; margin-top: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
 .admin-painel h2 { color: #111827; border-bottom: 2px solid #e5e7eb; padding-bottom: 15px; margin-top: 0; }
 
-.admin-form, .admin-form-protocolo { 
-  display: grid; 
-  grid-template-columns: 150px 1fr; /* Rótulo 150px | Input resto */
-  gap: 15px; 
-  background-color: #f9fafb; 
-  padding: 20px; 
-  border-radius: 8px; 
-  margin-bottom: 20px; 
-  border: 1px solid #e5e7eb; 
-  align-items: center; 
+/* Barra de Busca no Admin */
+.barra-busca-admin {
+  width: 100%; padding: 10px 15px; margin-bottom: 20px;
+  border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box;
 }
 
-.admin-form h3, .admin-form button[type="submit"] { grid-column: 1 / -1; }
-
-.admin-form input, .admin-form select { 
-  padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; width: 100%; box-sizing: border-box; 
-}
-.admin-form input[type="file"] { padding: 5px; }
+/* Organização do Formulário (Grid de Colunas) */
+.form-linha { display: flex; gap: 20px; margin-bottom: 15px; }
+.form-coluna { flex: 1; display: flex; flex-direction: column; }
+.form-coluna label { margin-bottom: 5px; font-weight: 600; color: #334155; }
+.form-coluna input[type="file"] { border: 1px dashed #cbd5e1; padding: 10px; background-color: #f8fafc; border-radius: 4px; cursor: pointer; }
+.form-coluna input[type="text"], .form-coluna select { padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; }
 
 .btn-salvar { 
   background-color: #10b981; color: white; border: none; padding: 12px; border-radius: 6px; 
@@ -244,251 +226,112 @@ main.layout-principal {
 
 .admin-painel ul { list-style: none; padding: 0; }
 .admin-painel li { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee; }
-.admin-capa-thumbnail { width: 40px; height: 40px; object-fit: cover; margin-right: 10px; border-radius: 4px; }
 .admin-botoes { display: flex; gap: 8px; }
-.btn-editar { background-color: #3b82f6; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
-.btn-deletar { background-color: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+.btn-editar { background-color: #3b82f6; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
+.btn-deletar { background-color: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
 .btn-cancelar { background-color: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;}
-
-.admin-form-editar-categoria, .admin-form-editar-protocolo { display: flex; flex-grow: 1; gap: 10px; align-items: center; }
-.admin-form-editar-categoria .input-editar-nome, .admin-form-editar-protocolo .input-editar-titulo { flex: 1; padding: 8px; font-size: 16px; border: 1px solid #007bff; border-radius: 5px; }
-.admin-form-editar-protocolo .input-editar-categoria { width: 150px; padding: 8px; font-size: 16px; border: 1px solid #007bff; border-radius: 5px; }
-
 
 /* --- 8. LOGIN / RODAPÉ --- */
 .form-login { display: grid; grid-template-columns: 1fr; gap: 15px; text-align: left; margin-top: 20px; }
-.form-login label { font-weight: bold; }
 .form-login input { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
 .form-login button { padding: 12px 20px; font-size: 16px; }
 
-/* --- 9. RODAPÉ (Ajustado: Mais Compacto) --- */
 .app-footer { 
-  background-color: #0056b3; 
-  color: white; 
-  border-top: 1px solid rgba(255, 255, 255, 0.1); 
-  
-  /* 10. REDUZIDO: Menos altura (era 15px 20px) */
-  padding: 10px 20px; 
-  
-  width: 100%; 
-  box-sizing: border-box; 
-  flex-shrink: 0; 
+  background-color: #0056b3; color: white; border-top: 1px solid rgba(255, 255, 255, 0.1); 
+  padding: 10px 20px; width: 100%; box-sizing: border-box; flex-shrink: 0; 
 }
+.footer-container { max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 5px; }
+.footer-logo-img { height: 45px; object-fit: contain; margin-bottom: 2px; }
+.footer-text p { margin: 2px 0; color: rgba(255, 255, 255, 0.9); font-size: 13px; line-height: 1.4; }
+.footer-version { font-size: 11px; color: rgba(255, 255, 255, 0.8); margin-top: 5px; font-family: monospace; background: rgba(255, 255, 255, 0.15); padding: 1px 6px; border-radius: 8px; display: inline-block; }
 
-.footer-container { 
-  max-width: 1000px; 
-  margin: 0 auto; 
-  display: flex; 
-  flex-direction: column; 
-  align-items: center; 
-  text-align: center; 
-  
-  /* REDUZIDO: Menos espaço entre logo e texto (era 15px) */
-  gap: 5px; 
-}
-
-.footer-logo-img { 
-  /* REDUZIDO: Logo um pouco menor para caber melhor (era 60px) */
-  height: 45px; 
-  object-fit: contain; 
-  margin-bottom: 2px; 
-}
-
-.footer-text p { 
-  margin: 2px 0; /* Margens mínimas */
-  color: rgba(255, 255, 255, 0.9); 
-  font-size: 13px; /* Fonte levemente menor */
-  line-height: 1.4; 
-}
-
-.footer-text strong { color: #ffffff; }
-
-.footer-version { 
-  font-size: 11px; 
-  color: rgba(255, 255, 255, 0.8); 
-  margin-top: 5px; 
-  font-family: monospace; 
-  background: rgba(255, 255, 255, 0.15); 
-  padding: 1px 6px; 
-  border-radius: 8px; 
-  display: inline-block;
-}
-
-
+/* Botões de Favoritos (Coração) */
 .btn-favoritar { position: absolute; top: 5px; right: 5px; background-color: rgba(255, 255, 255, 0.8); border: 1px solid #ccc; border-radius: 50%; padding: 3px 5px; cursor: pointer; font-size: 18px; line-height: 1; z-index: 50; transition: background-color 0.2s; }
-.btn-favoritar:hover { background-color: #ffcccc; }
+.btn-favoritar:hover { background-color: #ffcccc; transform: scale(1.1); }
 .btn-remover-favorito { position: absolute; top: 5px; right: 5px; background-color: rgba(220, 50, 50, 0.9); border: 1px solid #dc3545; border-radius: 50%; padding: 3px 6px; cursor: pointer; font-size: 14px; line-height: 1; color: white; z-index: 60; transition: background-color 0.2s; }
-.btn-remover-favorito:hover { background-color: #c82333; }
-.card-2d-link-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
 
+/* --- NOVOS CONTADORES --- */
+.badge-total { background-color: #0056b3; color: white; font-size: 14px; font-weight: 700; padding: 4px 12px; border-radius: 20px; box-shadow: 0 2px 4px rgba(0, 86, 179, 0.3); display: inline-block; vertical-align: middle; }
+.contador-categoria { font-size: 13px !important; color: #0056b3; background-color: #dbeafe; padding: 4px 10px; border-radius: 12px; margin-top: 5px; font-weight: 700 !important; transition: all 0.2s; border: 1px solid #bfdbfe; display: inline-block; }
+.card-2d-container:hover .contador-categoria { background-color: #0056b3; color: white; }
 
-/* --- NOVOS CONTADORES E BADGES --- */
+/* --- DASHBOARD LATERAL --- */
+.header-lateral-dashboard { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+.grupo-titulo-cat { display: flex; align-items: center; gap: 8px; }
+.grupo-titulo-cat h3 { margin: 0; color: #0056b3; font-size: 18px; }
+.badge-bolinha-azul { background-color: #0056b3; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+.grupo-total-geral { display: flex; align-items: center; gap: 8px; background-color: #e0f2fe; padding: 5px 10px; border-radius: 8px; border: 1px solid #bae6fd; }
+.label-total { font-size: 12px; font-weight: 600; color: #0056b3; }
+.badge-retangulo-azul { background-color: #0056b3; color: white; padding: 4px 12px; min-width: 35px; text-align: center; border-radius: 6px; font-size: 14px; font-weight: bold; display: inline-block; }
 
-/* 1. Badge do Total Geral (Cápsula Azul) */
-.badge-total {
-  background-color: #0056b3; /* Azul do Hospital */
-  color: white;
-  font-size: 14px;
+/* --- [NOVO] BOTÃO VOLTAR (Estilo Outline Moderno) --- */
+.btn-voltar-todos {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; 
+  background-color: #fff;
+  color: #0284c7; 
+  border: 2px solid #0284c7;
+  padding: 8px 20px;
+  border-radius: 30px; 
   font-weight: 700;
-  padding: 4px 12px;
-  border-radius: 20px;
-  box-shadow: 0 2px 4px rgba(0, 86, 179, 0.3);
-  display: inline-block;
-  vertical-align: middle;
-}
-
-/* 2. Contador Pequeno na Categoria */
-.contador-categoria {
-  /* AUMENTADO com !important para forçar a mudança */
-  font-size: 13px !important; 
-  
-  color: #0056b3; 
-  background-color: #dbeafe; 
-  
-  padding: 4px 10px; 
-  border-radius: 12px;
-  margin-top: 5px;
-  font-weight: 700 !important; /* Negrito forçado */
-  transition: all 0.2s;
-  border: 1px solid #bfdbfe;
-  display: inline-block; /* Garante que respeite o padding */
-}
-
-/* Ao passar o mouse no card, o contador fica azul */
-.card-2d-container:hover .contador-categoria {
-  background-color: #dbeafe;
-  color: #0056b3;
-}
-
-/* --- DASHBOARD NO CABEÇALHO LATERAL --- */
-
-.header-lateral-dashboard {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; /* Separa os grupos (Categorias na esq, Total na dir) */
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
   margin-bottom: 20px;
-  flex-wrap: wrap; /* Garante que não quebre no mobile */
-  gap: 10px;
+}
+.btn-voltar-todos:hover {
+  background-color: #0284c7; 
+  color: #fff; 
+  transform: translateX(-5px); 
+  box-shadow: 0 6px 12px rgba(2, 132, 199, 0.3);
 }
 
-/* Grupo 1: Título e Bolinha */
-.grupo-titulo-cat {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.grupo-titulo-cat h3 {
-  margin: 0;
-  color: #0056b3; /* Azul Hospital */
-  font-size: 18px;
-}
-
-.badge-bolinha-azul {
-  background-color: #0056b3;
-  color: white;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%; /* Bolinha perfeita */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-/* Grupo 2: Total Geral */
-.grupo-total-geral {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background-color: #e0f2fe; /* Fundo azulzinho claro para destacar o bloco */
-  padding: 5px 10px;
-  border-radius: 8px;
-  border: 1px solid #bae6fd;
-}
-
-.label-total {
-  font-size: 12px;
-  font-weight: 600;
-  color: #0056b3;
-}
-
-.badge-retangulo-azul {
-  background-color: #0056b3;
-  color: white;
-  
-  /* AUMENTADO: Mais espaço interno */
-  padding: 4px 12px; 
-  
-  /* NOVO: Garante largura mínima para 3 dígitos */
-  min-width: 35px; 
-  text-align: center; /* Centraliza o número */
-  
-  border-radius: 6px; 
-  font-size: 14px; /* Fonte levemente maior */
-  font-weight: bold;
-  display: inline-block; /* Importante para o width funcionar */
-}
-
-
-/* --- 11. MOBILE --- */
-/* === 11. RESPONSIVIDADE (TELEMÓVEL < 768px) === */
+/* --- MOBILE --- */
 @media (max-width: 768px) {
-  
-  main.layout-principal { 
-    display: block; 
-    height: auto; 
-    overflow: visible; 
-  }
-
-  .painel-lateral, .painel-principal { 
-    width: 100%; 
-    border-right: none; 
-    padding: 15px; 
-    overflow-y: visible; 
-  }
-  
-  .painel-lateral { 
-    border-bottom: 2px solid #bbf7d0; 
-    background-color: #f0fdf4; 
-  }
-  
-  .grid-categorias-lateral {
-    display: flex; 
-    overflow-x: auto; 
-    gap: 15px; 
-    padding-bottom: 10px; 
-    scrollbar-width: none; 
-  }
-  .grid-categorias-lateral::-webkit-scrollbar { display: none; }
+  main.layout-principal { display: block; height: auto; overflow: visible; }
+  .painel-lateral, .painel-principal { width: 100%; border-right: none; padding: 15px; overflow-y: visible; }
+  .painel-lateral { border-bottom: 2px solid #bbf7d0; background-color: #f0fdf4; }
+  .grid-categorias-lateral { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; scrollbar-width: none; }
   .grid-categorias-lateral .card-2d-container { min-width: 100px; flex-shrink: 0; }
-
-  .grid-container-protocolos {
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 15px;
-  }
+  .grid-container-protocolos { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
   .capa-wrapper-categoria { height: 120px; } 
   .capa-wrapper-protocolo { height: 180px; } 
-
   .app-header { padding: 10px 15px; height: auto; flex-wrap: wrap; }
   .header-logo { height: 40px; margin-bottom: 5px; }
   .header-texto h1 { font-size: 18px; }
   .header-texto h2 { font-size: 12px; }
-
-  .conteudo-pagina { 
-    padding: 15px !important; 
-    overflow-y: auto !important; 
-    -webkit-overflow-scrolling: touch; 
-  } /* <--- A CHAVETA QUE FALTAVA ESTÁ AQUI AGORA */
-
-  /* --- AJUSTE RODAPÉ MOBILE --- */
-  .app-footer {
-    /* Topo: 15px | Lados: 15px | BAIXO: 85px (Segurança para Mobile) */
-    padding: 15px 15px 85px 15px; 
-    text-align: center;
-  }
-  
-  /* Garante que a logo não fique gigante no celular */
+  .conteudo-pagina { padding: 15px !important; overflow-y: auto !important; -webkit-overflow-scrolling: touch; }
+  .app-footer { padding: 15px 15px 85px 15px; text-align: center; }
   .footer-logo-img { height: 40px; }
+}
+/* ================================================================== */
+/* --- CORREÇÃO DE EMERGÊNCIA: LIMITAR IMAGENS NO ADMIN --- */
+/* ================================================================== */
+
+/* Isso força qualquer imagem dentro da lista do Admin a ser pequena */
+.admin-painel ul li img, 
+.admin-capa-thumbnail {
+  max-width: 50px !important;   /* Largura máxima fixa */
+  max-height: 70px !important;  /* Altura máxima fixa */
+  width: auto !important;       /* Mantém a proporção */
+  height: auto !important;
+  
+  object-fit: contain;          /* Garante que a imagem inteira apareça */
+  margin-right: 15px;           /* Espaço entre a imagem e o texto */
+  
+  border: 1px solid #ccc;       /* Borda fininha */
+  border-radius: 4px;           /* Cantos arredondados */
+  background-color: #fff;       /* Fundo branco */
+  
+  flex-shrink: 0;               /* Impede a imagem de ser esmagada */
+  box-shadow: none !important;  /* Remove sombras pesadas se houver */
+  transform: none !important;   /* Remove efeito de levitação no admin */
+}
+
+/* Remove efeito de hover (crescer) dentro do admin para não atrapalhar */
+.admin-painel ul li:hover img {
+    transform: none !important;
+    filter: none !important;
 }

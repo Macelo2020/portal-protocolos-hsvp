@@ -1,0 +1,47 @@
+--- RESUMO DE RETOMADA: PORTAL PROTOCOLOS HSVP ---
+VERSÃO ATUAL: 3.1.0 (Visual Upgrade)
+DATA: 23/12/2025
+
+ESTADO TÉCNICO:
+1. Backend (Node.js/Express 5):
+   - Arquivo: backend/index.js
+   - Função: Serve a API e também os arquivos estáticos do Frontend (React).
+   - Rota Coringa: Usa regex /.*/ para suportar o React Router e refresh (F5).
+   - Pastas Públicas: /public/images e /public/pdfs.
+
+2. Frontend (React/Vite):
+   - CSS: Efeitos de Hover/Glow e correções de responsividade no Admin.
+   - Admin: Busca filtrada, thumbnails corrigidos (max-width) e formulários em grid.
+   - Home: Botão "Voltar" estilizado e navegação fluida.
+   - Config: vite.config.js sem 'base' fixa (agnóstico).
+   - API Service: Detecta IP dinamicamente.
+
+3. Automação (PM2 + Batch):
+   - Script Principal: DEPLOY_AUTOMATICO.bat
+   - Backup: BACKUP_TOTAL_V3.bat (Salva em C: e E: simultaneamente).
+   - Fluxo: Build do Vite -> Limpa Public -> Copia Dist -> Reinicia PM2.
+   - Serviço Windows: PM2 rodando como "portal-protocolos".
+
+4. Banco de Dados:
+   - MySQL (XAMPP porta 3306).
+   - Tabelas Principais: protocolos, categorias, favoritos, usuarios.
+
+5. Sistema de Backup (Redundante):
+   - Script: BACKUP_TOTAL_V3.bat
+   - Estratégia: Espelhamento simultâneo (Mirroring).
+   - Fluxo: Gera Dump SQL -> Copia Projeto Completo -> Salva em C: -> Salva em E: (BlueFrog).
+   - Organização: O arquivo .sql fica dentro da pasta 'Database_SQL' em cada backup.
+
+HISTÓRICO DE ALTERAÇÕES RECENTES:
+
+[v3.1.0 - Visual Upgrade]
+- Refinamento visual (CSS Glow/Hover nas capas).
+- Correção de imagens gigantes no Painel Admin.
+- Alinhamento de campos de formulário (Upload lado a lado).
+- Botão "Voltar para Todos" modernizado.
+
+[v3.0.0 - Unified Server]
+- Remoção da dependência do Apache (htdocs) para o site.
+- Implementação de Barra de Busca no Admin.
+- Ajuste de Logos para mobile.
+- Implementação de Backup Automático em Unidade Externa (E:).
