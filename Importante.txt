@@ -1,4 +1,4 @@
-⚠️ LEIA COM ATENÇÃO - GUIA DE DESENVOLVIMENTO v3.0 ⚠️
+⚠️ LEIA COM ATENÇÃO - GUIA DE DESENVOLVIMENTO v3.1 ⚠️
 
 Este projeto foi migrado para a arquitetura "Unified Server" (Node.js serve tudo).
 NÃO COPIE MAIS ARQUIVOS PARA O XAMPP/HTDOCS MANUALMENTE!

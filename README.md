@@ -8,6 +8,27 @@ Sistema Full Stack desenvolvido para o **Hospital São Vicente de Paulo**, centr
 
 ---
 
+## 📸 Galeria do Sistema
+
+Aqui estão algumas telas do sistema em funcionamento (Versão 3.1.0):
+
+### 🏠 Acesso Público e Leitura
+| Tela de Login | Tela Inicial (Home) |
+| :---: | :---: |
+| ![Login](screenshots/login.png) | ![Home](screenshots/home.png) | ![Home1](screenshots/home1.png) |
+
+### ⭐ Funcionalidades do Usuário
+| Meus Favoritos | Visualização Mobile |
+| :---: | :---: |
+| ![Favoritos](screenshots/favoritos.png) | *Interface Responsiva* |
+
+### ⚙️ Painel Administrativo
+| Gestão de Categorias | Gestão de Protocolos |
+| :---: | :---: |
+| ![Admin Categorias](screenshots/admin-categorias.png) | ![Admin Protocolos](screenshots/admin-protocolos.png) |
+
+---
+
 ## 🚀 O Que Há de Novo na v3.1.0? (Visual Upgrade)
 
 Esta versão foca na experiência do usuário (UX) e refinamento visual, além da infraestrutura unificada.
@@ -56,4 +77,4 @@ Sempre que alterar o código, siga este passo único:
 "Blue Frog Smart Solutions" 🐸💙
 
 ---
-© 2025 Hospital São Vicente de Paulo. Todos os direitos reservados.
+© 2026 Hospital São Vicente de Paulo. Todos os direitos reservados.
