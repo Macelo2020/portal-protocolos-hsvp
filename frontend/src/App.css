@@ -1,4 +1,4 @@
-/* Professor de Programação: App.css (VERSÃO 9.0 - Visual Moderno + Glow) */
+/* Professor de Programação: App.css (VERSÃO 10.0 - Visual 3D Pro + Placeholders Modernos) */
 
 /* --- 1. GERAL E RESET --- */
 body { 
@@ -17,7 +17,7 @@ body {
   overflow: hidden;
 }
 
-/* --- 2. CABEÇALHO (Ajustado) --- */
+/* --- 2. CABEÇALHO --- */
 .app-header {
   display: flex; align-items: center;
   background: linear-gradient(135deg, #004a9f, #003370); 
@@ -118,13 +118,18 @@ main.layout-principal {
 .barra-busca:focus, .barra-busca-pequena:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
 
 /* --- 5. GRIDS --- */
+/* --- 5. GRIDS (ATUALIZADO PARA RESPONSIVIDADE TOTAL) --- */
 .grid-container-protocolos {
   display: grid;
-  grid-template-columns: repeat(10, 1fr); 
-  gap: 10px; 
+  /* MUDANÇA CRÍTICA: Em vez de 10 colunas fixas, usamos auto-fill inteligente */
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
+  gap: 20px; /* Espaço saudável entre os cards */
   align-items: start;
+  padding: 10px;
+  width: 100%; /* Garante que usa a largura disponível */
 }
 
+/* Mantém o grid lateral como está ou ajusta se necessário */
 .grid-categorias-lateral {
   display: grid;
   grid-template-columns: repeat(4, 1fr); 
@@ -137,81 +142,146 @@ main.layout-principal {
   gap: 30px 20px;
 }
 
-/* --- 6. CARDS (LIVROS) - COM NOVO EFEITO GLOW/HOVER --- */
+/* --- 6. CARDS (LIVROS) - LÓGICA HÍBRIDA (DESKTOP vs MOBILE) --- */
+
 .card-2d-container {
   display: flex; flex-direction: column; align-items: center;
   cursor: pointer; 
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Animação mais suave */
+  /* Transição rápida para feedback imediato no toque */
+  transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
   position: relative; 
-  border-radius: 6px; /* Para o brilho seguir a borda */
+  border-radius: 6px;
+  perspective: 1000px;
+  -webkit-tap-highlight-color: transparent; /* Remove o quadrado azul padrão do Android */
 }
 
 .card-2d-link { text-decoration: none; color: inherit; display: block; }
 
-/* EFEITO DE LEVITAÇÃO E BRILHO AO PASSAR O MOUSE */
-.card-2d-container:hover { 
-  transform: translateY(-8px) scale(1.02); /* Flutua e cresce */
-  z-index: 10;
+/* =========================================
+   🖥️ COMPORTAMENTO DESKTOP (Mouse / Hover)
+   Só aplica rotação 3D se a tela for grande
+   ========================================= */
+@media (min-width: 769px) {
+  .card-2d-container:hover .capa-wrapper-categoria,
+  .card-2d-container:hover .capa-wrapper-protocolo {
+    /* Efeito de Levitação e Rotação 3D */
+    transform: rotateY(-15deg) translateY(-10px) scale(1.02);
+    
+    /* Sombra deslocada + Glow Azulado */
+    box-shadow: -15px 20px 30px rgba(0, 0, 0, 0.3), 
+                0 0 15px rgba(59, 130, 246, 0.5); 
+    
+    border-left: 1px solid rgba(255, 255, 255, 0.6);
+    z-index: 20;
+  }
 }
 
-.card-2d-container:hover .capa-wrapper-categoria,
-.card-2d-container:hover .capa-wrapper-protocolo {
-  box-shadow: 0 15px 30px rgba(2, 132, 199, 0.25); /* Sombra azulada */
-  border: 2px solid #3b82f6; /* Borda acende */
+/* =========================================
+   📱 COMPORTAMENTO MOBILE (Toque / Active)
+   Usa :active para quando o dedo encosta na tela
+   ========================================= */
+@media (max-width: 768px) {
+  .card-2d-container:active {
+    /* Efeito "Tactile Press": O card encolhe levemente simulando um botão físico */
+    transform: scale(0.95);
+  }
+
+  .card-2d-container:active .capa-wrapper-categoria,
+  .card-2d-container:active .capa-wrapper-protocolo {
+    /* Efeito GLOW Intenso no Toque */
+    box-shadow: 0 0 20px rgba(0, 123, 255, 0.8), 
+                0 0 40px rgba(0, 123, 255, 0.4); 
+    
+    border-color: #3b82f6; /* Borda fica azul brilhante */
+  }
 }
 
-/* Molduras */
-.capa-wrapper-categoria, .capa-wrapper-protocolo {
+/* --- MOLDURAS E ESTILOS VISUAIS (Atualizado v3.1.1 - Responsivo) --- */
+
+/* 1. Estilos Compartilhados (Base para Categorias e Protocolos) */
+.capa-wrapper-categoria, 
+.capa-wrapper-protocolo {
   width: 100%;
   position: relative;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15); 
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15); 
   border-radius: 4px; 
   overflow: hidden;
   background-color: #fff;
   display: flex; align-items: center; justify-content: center;
-  border: 2px solid transparent; /* Espaço invisível para a borda não pular */
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
+  transform-style: preserve-3d;
 }
 
-.capa-wrapper-categoria { height: 140px; } 
-.capa-wrapper-protocolo { height: 160px; } 
+/* 2. Específico para Categorias (Mantém altura fixa retangular deitada) */
+.capa-wrapper-categoria { 
+  height: 140px; 
+} 
 
+/* 3. Específico para Protocolos (Novo: Proporção de Livro Inteligente) */
+.capa-wrapper-protocolo { 
+  /* Removemos a height fixa (height: 160px) */
+  
+  /* Mágica do CSS Moderno: Mantém proporção 3:4 sempre */
+  aspect-ratio: 3 / 4; 
+} 
+
+/* 4. Estilo das Imagens (Preenchimento Total) */
 .capa-wrapper-categoria .imagem-capa-2d,
 .capa-wrapper-protocolo .imagem-capa-2d {
-  width: 100%; height: 100%; object-fit: contain; padding: 3px; 
+  width: 100%; 
+  height: 100%; 
+  
+  /* 'cover' garante que a imagem preencha o card sem distorcer */
+  object-fit: cover; 
+  
+  padding: 0; /* Removido padding para visual "borda a borda" */
   transition: filter 0.3s ease;
+  background-color: #fff;
 }
 
-.card-2d-container:hover img {
-  filter: brightness(1.08); /* Imagem fica mais viva */
-}
-
-/* Placeholders */
+/* Placeholder Moderno (Gradiente) */
 .placeholder-capa-categoria {
   height: 100%; width: 100%;
-  background: linear-gradient(135deg, #2563eb, #1e40af); 
-  color: white; display: flex; align-items: center; justify-content: center;
-  padding: 2px; text-align: center; font-weight: bold; font-size: 12px;
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: rgba(255, 255, 255, 0.95); 
+  display: flex; align-items: center; justify-content: center;
+  padding: 10px; text-align: center; 
+  font-weight: 800; font-size: 20px; 
+  text-transform: uppercase; letter-spacing: 1px;
+  position: relative;
 }
+
+.placeholder-capa-categoria::after {
+  content: '';
+  position: absolute;
+  top: 6px; left: 6px; right: 6px; bottom: 6px;
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
 .placeholder-capa-protocolo { height: 100%; width: 100%; background-color: #6b7280; }
 
 .legenda-2d {
-  text-align: center; font-weight: 600; font-size: 11px; margin: 5px 0 0 0;
+  text-align: center; font-weight: 600; font-size: 11px; margin: 8px 0 0 0;
   color: #374151; line-height: 1.2; word-wrap: break-word;
+  transition: color 0.3s;
 }
+
+/* O texto também fica azul no hover do Desktop */
+@media (min-width: 769px) {
+    .card-2d-container:hover .legenda-2d {
+      color: #0284c7; 
+    }
+}
+
 .contagem-2d { font-size: 10px; color: #6b7280; margin-top: 1px; text-align: center; display: block; }
 
 /* --- 7. ADMIN (FORMULÁRIO ALINHADO) --- */
 .admin-painel { background-color: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 25px; margin-top: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
 .admin-painel h2 { color: #111827; border-bottom: 2px solid #e5e7eb; padding-bottom: 15px; margin-top: 0; }
 
-/* Barra de Busca no Admin */
-.barra-busca-admin {
-  width: 100%; padding: 10px 15px; margin-bottom: 20px;
-  border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box;
-}
+.barra-busca-admin { width: 100%; padding: 10px 15px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
 
-/* Organização do Formulário (Grid de Colunas) */
 .form-linha { display: flex; gap: 20px; margin-bottom: 15px; }
 .form-coluna { flex: 1; display: flex; flex-direction: column; }
 .form-coluna label { margin-bottom: 5px; font-weight: 600; color: #334155; }
@@ -231,6 +301,16 @@ main.layout-principal {
 .btn-deletar { background-color: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
 .btn-cancelar { background-color: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;}
 
+/* FIX PARA IMAGENS DO ADMIN (Não aplicar efeito 3D aqui) */
+.admin-painel ul li img, 
+.admin-capa-thumbnail {
+  max-width: 50px !important; max-height: 70px !important; width: auto !important; height: auto !important;
+  object-fit: contain; margin-right: 15px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff;
+  flex-shrink: 0; box-shadow: none !important; transform: none !important;
+}
+.admin-painel ul li:hover img { transform: none !important; filter: none !important; }
+
+
 /* --- 8. LOGIN / RODAPÉ --- */
 .form-login { display: grid; grid-template-columns: 1fr; gap: 15px; text-align: left; margin-top: 20px; }
 .form-login input { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
@@ -245,17 +325,16 @@ main.layout-principal {
 .footer-text p { margin: 2px 0; color: rgba(255, 255, 255, 0.9); font-size: 13px; line-height: 1.4; }
 .footer-version { font-size: 11px; color: rgba(255, 255, 255, 0.8); margin-top: 5px; font-family: monospace; background: rgba(255, 255, 255, 0.15); padding: 1px 6px; border-radius: 8px; display: inline-block; }
 
-/* Botões de Favoritos (Coração) */
+/* Botões de Favoritos */
 .btn-favoritar { position: absolute; top: 5px; right: 5px; background-color: rgba(255, 255, 255, 0.8); border: 1px solid #ccc; border-radius: 50%; padding: 3px 5px; cursor: pointer; font-size: 18px; line-height: 1; z-index: 50; transition: background-color 0.2s; }
 .btn-favoritar:hover { background-color: #ffcccc; transform: scale(1.1); }
 .btn-remover-favorito { position: absolute; top: 5px; right: 5px; background-color: rgba(220, 50, 50, 0.9); border: 1px solid #dc3545; border-radius: 50%; padding: 3px 6px; cursor: pointer; font-size: 14px; line-height: 1; color: white; z-index: 60; transition: background-color 0.2s; }
 
-/* --- NOVOS CONTADORES --- */
+/* --- DASHBOARD / BADGES --- */
 .badge-total { background-color: #0056b3; color: white; font-size: 14px; font-weight: 700; padding: 4px 12px; border-radius: 20px; box-shadow: 0 2px 4px rgba(0, 86, 179, 0.3); display: inline-block; vertical-align: middle; }
 .contador-categoria { font-size: 13px !important; color: #0056b3; background-color: #dbeafe; padding: 4px 10px; border-radius: 12px; margin-top: 5px; font-weight: 700 !important; transition: all 0.2s; border: 1px solid #bfdbfe; display: inline-block; }
 .card-2d-container:hover .contador-categoria { background-color: #0056b3; color: white; }
 
-/* --- DASHBOARD LATERAL --- */
 .header-lateral-dashboard { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
 .grupo-titulo-cat { display: flex; align-items: center; gap: 8px; }
 .grupo-titulo-cat h3 { margin: 0; color: #0056b3; font-size: 18px; }
@@ -264,29 +343,13 @@ main.layout-principal {
 .label-total { font-size: 12px; font-weight: 600; color: #0056b3; }
 .badge-retangulo-azul { background-color: #0056b3; color: white; padding: 4px 12px; min-width: 35px; text-align: center; border-radius: 6px; font-size: 14px; font-weight: bold; display: inline-block; }
 
-/* --- [NOVO] BOTÃO VOLTAR (Estilo Outline Moderno) --- */
+/* --- BOTÃO VOLTAR (Outline Moderno) --- */
 .btn-voltar-todos {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px; 
-  background-color: #fff;
-  color: #0284c7; 
-  border: 2px solid #0284c7;
-  padding: 8px 20px;
-  border-radius: 30px; 
-  font-weight: 700;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-  margin-bottom: 20px;
+  display: inline-flex; align-items: center; gap: 8px; background-color: #fff; color: #0284c7; border: 2px solid #0284c7;
+  padding: 8px 20px; border-radius: 30px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px;
 }
-.btn-voltar-todos:hover {
-  background-color: #0284c7; 
-  color: #fff; 
-  transform: translateX(-5px); 
-  box-shadow: 0 6px 12px rgba(2, 132, 199, 0.3);
-}
+.btn-voltar-todos:hover { background-color: #0284c7; color: #fff; transform: translateX(-5px); box-shadow: 0 6px 12px rgba(2, 132, 199, 0.3); }
 
 /* --- MOBILE --- */
 @media (max-width: 768px) {
@@ -297,7 +360,6 @@ main.layout-principal {
   .grid-categorias-lateral .card-2d-container { min-width: 100px; flex-shrink: 0; }
   .grid-container-protocolos { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
   .capa-wrapper-categoria { height: 120px; } 
-  .capa-wrapper-protocolo { height: 180px; } 
   .app-header { padding: 10px 15px; height: auto; flex-wrap: wrap; }
   .header-logo { height: 40px; margin-bottom: 5px; }
   .header-texto h1 { font-size: 18px; }
@@ -305,33 +367,4 @@ main.layout-principal {
   .conteudo-pagina { padding: 15px !important; overflow-y: auto !important; -webkit-overflow-scrolling: touch; }
   .app-footer { padding: 15px 15px 85px 15px; text-align: center; }
   .footer-logo-img { height: 40px; }
-}
-/* ================================================================== */
-/* --- CORREÇÃO DE EMERGÊNCIA: LIMITAR IMAGENS NO ADMIN --- */
-/* ================================================================== */
-
-/* Isso força qualquer imagem dentro da lista do Admin a ser pequena */
-.admin-painel ul li img, 
-.admin-capa-thumbnail {
-  max-width: 50px !important;   /* Largura máxima fixa */
-  max-height: 70px !important;  /* Altura máxima fixa */
-  width: auto !important;       /* Mantém a proporção */
-  height: auto !important;
-  
-  object-fit: contain;          /* Garante que a imagem inteira apareça */
-  margin-right: 15px;           /* Espaço entre a imagem e o texto */
-  
-  border: 1px solid #ccc;       /* Borda fininha */
-  border-radius: 4px;           /* Cantos arredondados */
-  background-color: #fff;       /* Fundo branco */
-  
-  flex-shrink: 0;               /* Impede a imagem de ser esmagada */
-  box-shadow: none !important;  /* Remove sombras pesadas se houver */
-  transform: none !important;   /* Remove efeito de levitação no admin */
-}
-
-/* Remove efeito de hover (crescer) dentro do admin para não atrapalhar */
-.admin-painel ul li:hover img {
-    transform: none !important;
-    filter: none !important;
 }

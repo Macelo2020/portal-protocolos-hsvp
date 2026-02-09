@@ -2,15 +2,32 @@
 
 Sistema Full Stack desenvolvido para o **Hospital São Vicente de Paulo**, centralizando o acesso aos Protocolos Operacionais Padrão (POPs) para médicos e colaboradores via Computador e Dispositivos Móveis.
 
-![Versão](https://img.shields.io/badge/Versão-3.1.0-blue)
+![Versão](https://img.shields.io/badge/Versão-3.1.2-blue)
 ![Arquitetura](https://img.shields.io/badge/Arquitetura-Unified_Server-success)
 ![Status](https://img.shields.io/badge/Status-Estável-green)
 
 ---
 
+## 🚀 Histórico de Versões
+
+### v3.1.2 (Atual - Auto-Detect & Grid Fix)
+* **📡 API Inteligente:** Implementação de detecção automática de IP. O sistema agora funciona simultaneamente em `localhost` e na Rede sem necessidade de configuração manual.
+* **📱 Grid Responsivo:** Correção do layout dos cards de protocolos, utilizando `auto-fill` e `aspect-ratio` para evitar distorções em telas menores.
+* **🔧 Hotfix de Login:** Ajuste na importação de serviços para garantir estabilidade no build.
+
+### v3.1.1
+* **✨ UX Polish:** Visual Híbrido (Efeitos 3D no Desktop / Tactile Press no Mobile).
+* **Refinamento:** Ajustes finos de CSS para dispositivos móveis.
+
+### v3.1.0
+* **Infraestrutura:** Servidor Unificado Node.js.
+* **Backup:** Sistema redundante.
+
+---
+
 ## 📸 Galeria do Sistema
 
-Aqui estão algumas telas do sistema em funcionamento (Versão 3.1.0):
+Aqui estão algumas telas do sistema em funcionamento:
 
 ### 🏠 Acesso Público e Leitura
 | Tela de Login | Tela Inicial (Home) |
@@ -29,25 +46,14 @@ Aqui estão algumas telas do sistema em funcionamento (Versão 3.1.0):
 
 ---
 
-## 🚀 O Que Há de Novo na v3.1.0? (Visual Upgrade)
-
-Esta versão foca na experiência do usuário (UX) e refinamento visual, além da infraestrutura unificada.
-
-* **✨ Visual Moderno:** Efeitos de "levitação" e brilho (Glow) nas capas dos protocolos.
-* **🎨 Admin Otimizado:** Painel administrativo com imagens ajustadas, formulários alinhados e barra de busca integrada.
-* **⚡ Servidor Unificado:** O **Node.js** gerencia API e Site, sem dependência do Apache.
-* **🛡️ Backup Redundante:** Sistema de segurança que salva dados no Disco Local e Externo simultaneamente.
-* **🤖 Deploy Automático:** Script de atualização de um clique.
-
----
-
 ## 📋 Como Rodar o Projeto
 
 ### Inicialização Automática
 O sistema roda em segundo plano através do **PM2**.
 
 * **Acesso no Servidor:** `http://localhost:3001`
-* **Acesso na Rede:** `http://192.168.0.201:3001`
+* **Acesso na Rede:** O IP pode variar. Verifique o endereço atual com o comando `ipconfig` no terminal do servidor.
+    * *Exemplo:* `http://192.168.0.XXX:3001`
 
 ---
 

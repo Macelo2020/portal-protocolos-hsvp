@@ -1,6 +1,6 @@
 --- RESUMO DE RETOMADA: PORTAL PROTOCOLOS HSVP ---
-VERSÃO ATUAL: 3.1.0 (Visual Upgrade)
-DATA: 23/12/2025
+VERSÃO ATUAL: 3.1.1 (Visual Híbrido - UX Patch)
+DATA: 08/01/2026
 
 ESTADO TÉCNICO:
 1. Backend (Node.js/Express 5):
@@ -10,11 +10,11 @@ ESTADO TÉCNICO:
    - Pastas Públicas: /public/images e /public/pdfs.
 
 2. Frontend (React/Vite):
-   - CSS: Efeitos de Hover/Glow e correções de responsividade no Admin.
-   - Admin: Busca filtrada, thumbnails corrigidos (max-width) e formulários em grid.
-   - Home: Botão "Voltar" estilizado e navegação fluida.
+   - CSS: Lógica Híbrida implementada (Media Queries).
+     * Desktop (>768px): Efeitos 3D, Levitação e Glow ao passar o mouse (Hover).
+     * Mobile (<768px): Efeito "Tactile Press" (escala reduzida) e Glow intenso ao tocar (Active).
+   - Admin: Busca filtrada, thumbnails corrigidos e formulários responsivos.
    - Config: vite.config.js sem 'base' fixa (agnóstico).
-   - API Service: Detecta IP dinamicamente.
 
 3. Automação (PM2 + Batch):
    - Script Principal: DEPLOY_AUTOMATICO.bat
@@ -34,14 +34,18 @@ ESTADO TÉCNICO:
 
 HISTÓRICO DE ALTERAÇÕES RECENTES:
 
+[v3.1.1 - Visual Híbrido UX]
+- Implementação de CSS responsivo para interação.
+- Separação de lógica: Mouse (Desktop) vs Toque (Mobile).
+- Correção de UX no Mobile: Removida rotação 3D para evitar glitches no toque.
+- Atualização de Badges e Documentação.
+
 [v3.1.0 - Visual Upgrade]
-- Refinamento visual (CSS Glow/Hover nas capas).
+- Refinamento visual inicial (CSS Glow).
 - Correção de imagens gigantes no Painel Admin.
-- Alinhamento de campos de formulário (Upload lado a lado).
-- Botão "Voltar para Todos" modernizado.
+- Alinhamento de campos de formulário.
 
 [v3.0.0 - Unified Server]
-- Remoção da dependência do Apache (htdocs) para o site.
+- Remoção da dependência do Apache.
 - Implementação de Barra de Busca no Admin.
-- Ajuste de Logos para mobile.
-- Implementação de Backup Automático em Unidade Externa (E:).
+- Backup Automático em Unidade Externa.

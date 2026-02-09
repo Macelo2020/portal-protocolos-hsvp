@@ -211,6 +211,6 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 SERVIDOR UNIFICADO (BACKEND + FRONTEND) RODANDO!`);
   console.log(`📡 Porta: ${PORT}`);
   console.log(`🌐 Acesso Local: http://localhost:${PORT}`);
-  console.log(`🌐 Acesso Rede:  http://192.168.0.201:${PORT}`);
+  console.log(`🌍 Acesso Rede: Verifique seu IP no ipconfig (Porta ${PORT})`);
   console.log(`===========================================================`);
 });
