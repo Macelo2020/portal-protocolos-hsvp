@@ -10,10 +10,10 @@ Sistema Full Stack desenvolvido para o **Hospital São Vicente de Paulo**, centr
 
 ## 🚀 Histórico de Versões
 
-### v3.1.2 (Atual - Auto-Detect & Grid Fix)
+### v3.1.2 (Atual - Auto-Detect, Grid Fix & Infra)
+* **🌐 Resiliência de Rede:** Configuração de acesso via Hostname (`http://ti2:3001/`) no Portal principal, garantindo estabilidade mesmo com IPs dinâmicos (DHCP).
 * **📡 API Inteligente:** Implementação de detecção automática de IP. O sistema agora funciona simultaneamente em `localhost` e na Rede sem necessidade de configuração manual.
 * **📱 Grid Responsivo:** Correção do layout dos cards de protocolos, utilizando `auto-fill` e `aspect-ratio` para evitar distorções em telas menores.
-* **🔧 Hotfix de Login:** Ajuste na importação de serviços para garantir estabilidade no build.
 
 ### v3.1.1
 * **✨ UX Polish:** Visual Híbrido (Efeitos 3D no Desktop / Tactile Press no Mobile).
@@ -51,9 +51,10 @@ Aqui estão algumas telas do sistema em funcionamento:
 ### Inicialização Automática
 O sistema roda em segundo plano através do **PM2**.
 
-* **Acesso no Servidor:** `http://localhost:3001`
-* **Acesso na Rede:** O IP pode variar. Verifique o endereço atual com o comando `ipconfig` no terminal do servidor.
-    * *Exemplo:* `http://192.168.0.XXX:3001`
+* **Acesso Oficial na Intranet (Recomendado):** `http://ti2:3001/`
+    * *Nota: Usamos o Hostname para evitar quebras caso o roteador mude o IP do servidor.*
+* **Acesso no Servidor Físico (Local):** `http://localhost:3001`
+* **Acesso via IP Temporário:** Caso precise acessar via IP, verifique o endereço atual com o comando `ipconfig` no terminal do servidor. (Ex: `http://192.168.0.XXX:3001`)
 
 ---
 

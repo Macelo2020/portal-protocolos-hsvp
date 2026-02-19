@@ -1,6 +1,6 @@
 --- RESUMO DE RETOMADA: PORTAL PROTOCOLOS HSVP ---
-VERSÃO ATUAL: 3.1.1 (Visual Híbrido - UX Patch)
-DATA: 08/01/2026
+VERSÃO ATUAL: 3.1.2 (Auto-Detect, Grid Fix & Infra Hostname)
+DATA: 19/02/2026
 
 ESTADO TÉCNICO:
 1. Backend (Node.js/Express 5):
@@ -10,9 +10,10 @@ ESTADO TÉCNICO:
    - Pastas Públicas: /public/images e /public/pdfs.
 
 2. Frontend (React/Vite):
-   - CSS: Lógica Híbrida implementada (Media Queries).
-     * Desktop (>768px): Efeitos 3D, Levitação e Glow ao passar o mouse (Hover).
-     * Mobile (<768px): Efeito "Tactile Press" (escala reduzida) e Glow intenso ao tocar (Active).
+   - CSS: Lógica Híbrida implementada (Media Queries) + Grid Responsivo (auto-fill e aspect-ratio 3/4).
+   - API Inteligente (apiService.js): Uso de window.location.hostname para funcionar independente do IP.
+   - Desktop (>768px): Efeitos 3D, Levitação e Glow ao passar o mouse (Hover).
+   - Mobile (<768px): Efeito "Tactile Press" (escala reduzida) e Glow intenso ao tocar (Active).
    - Admin: Busca filtrada, thumbnails corrigidos e formulários responsivos.
    - Config: vite.config.js sem 'base' fixa (agnóstico).
 
@@ -22,9 +23,9 @@ ESTADO TÉCNICO:
    - Fluxo: Build do Vite -> Limpa Public -> Copia Dist -> Reinicia PM2.
    - Serviço Windows: PM2 rodando como "portal-protocolos".
 
-4. Banco de Dados:
-   - MySQL (XAMPP porta 3306).
-   - Tabelas Principais: protocolos, categorias, favoritos, usuarios.
+4. Infraestrutura e Rede (NOVO):
+   - Banco de Dados: MySQL (XAMPP porta 3306). Tabelas Principais: protocolos, categorias, favoritos, usuarios.
+   - Acesso na Intranet Principal (SoulMV/IWGP): O link no portal principal (Servidor .11) está configurado via Hostname (http://ti2:3001/) em vez de IP fixo. Isso previne quebras de acesso caso o servidor receba um novo IP dinâmico do DHCP do roteador.
 
 5. Sistema de Backup (Redundante):
    - Script: BACKUP_TOTAL_V3.bat
@@ -33,6 +34,11 @@ ESTADO TÉCNICO:
    - Organização: O arquivo .sql fica dentro da pasta 'Database_SQL' em cada backup.
 
 HISTÓRICO DE ALTERAÇÕES RECENTES:
+
+[v3.1.2 - Auto-Detect, Grid Fix & Infra Hostname]
+- Implementação de Hostname (http://ti2:3001/) no servidor principal para imunidade a trocas de IP.
+- API Inteligente (apiService.js) detecta localhost ou IP da rede automaticamente.
+- Correção do Grid Responsivo de protocolos (auto-fill e aspect-ratio).
 
 [v3.1.1 - Visual Híbrido UX]
 - Implementação de CSS responsivo para interação.
@@ -44,8 +50,3 @@ HISTÓRICO DE ALTERAÇÕES RECENTES:
 - Refinamento visual inicial (CSS Glow).
 - Correção de imagens gigantes no Painel Admin.
 - Alinhamento de campos de formulário.
-
-[v3.0.0 - Unified Server]
-- Remoção da dependência do Apache.
-- Implementação de Barra de Busca no Admin.
-- Backup Automático em Unidade Externa.
