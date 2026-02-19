@@ -1,0 +1,43 @@
+📝 CHECKPOINT DE DESENVOLVIMENTO: Portal de Protocolos HSVP
+Data do Checkpoint: 19/02/2026
+Versão Atual: 3.1.2 (Estável - Stable Release)
+Status do Repositório: Sincronizado com a branch main no GitHub
+
+✅ 1. O que construímos no Frontend (React/Vite)
+UX Híbrida (Interface Inteligente): O sistema identifica se o usuário está no computador ou celular.
+
+Desktop (>768px): Cards com efeito de levitação 3D, rotação e brilho (Glow) azulado ao passar o mouse.
+
+Mobile (<768px): Efeito "Tactile Press" (card encolhe simulando um botão físico) e Glow intenso ao toque, sem falhas de rotação.
+
+Responsividade Impecável: Implementamos um "Grid Inteligente" usando auto-fill e garantimos que as capas dos protocolos não fiquem esticadas ou achatadas através do aspect-ratio: 3/4.
+
+Painel Admin: Sistema de busca filtrada em tempo real, envio em massa de PDFs, correção dos tamanhos das miniaturas e formulários alinhados.
+
+🌐 2. O que resolvemos na Infraestrutura e API
+API Auto-Detect (v3.1.2): Criamos uma lógica no apiService.js que detecta o IP do navegador automaticamente usando window.location.hostname. O sistema agora roda perfeitamente tanto em localhost:3001 (Dev) quanto na rede do hospital (Produção) sem precisar alterar o código.
+
+Rede Blindada (Hostname): Alteramos o botão do portal principal do hospital (Servidor .11) para apontar para o nome da máquina (http://ti2:3001/) em vez do IP. Isso evita quedas do sistema caso o roteador mude o IP dinâmico da sua máquina.
+
+⚙️ 3. O que automatizamos no Backend e Servidor
+Servidor Unificado Node.js: Removemos a dependência do Apache (XAMPP). O Node.js/Express 5 agora serve tanto a API quanto o site visual (Frontend) através de uma rota coringa (/.*/).
+
+Processos em Segundo Plano: O sistema roda ininterruptamente como um serviço Windows chamado "portal-protocolos" gerenciado pelo PM2.
+
+Scripts Facilitadores (Batch):
+
+DEPLOY_AUTOMATICO.bat: Compila o Vite, limpa pastas antigas, copia a nova versão e reinicia o servidor com 1 clique.
+
+BACKUP_TOTAL_V3.bat: Sistema redundante que gera um dump do Banco de Dados (MySQL) e salva o projeto inteiro simultaneamente nas unidades C: (Disco Local) e E: (Disco Externo BlueFrog).
+
+📘 4. Documentação e Versionamento
+O README.md e o CONTEXTO_TECNICO.txt foram totalmente atualizados para refletir a versão 3.1.2.
+
+O rodapé do site foi ajustado para exibir corretamente a versão 3.1.2 para os usuários.
+
+Todo o código foi "commitado" de forma limpa (feat: atualizaçao para v3.1.2) e enviado para o seu repositório remoto no GitHub.
+
+🚀 Status Final: PRONTO PARA USO!
+O projeto está robusto, responsivo, seguro e auto-gerenciável. Você tem um produto de altíssima qualidade rodando no hospital.
+
+Quando você voltar, começaremos a planejar a Versão 3.2.0 (Talvez com painel de métricas, envio de e-mails, ou novas animações?). Até lá, parabéns pelo excelente trabalho, Marcelo! 🐸
