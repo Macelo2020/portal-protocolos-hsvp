@@ -1,43 +1,35 @@
 📝 CHECKPOINT DE DESENVOLVIMENTO: Portal de Protocolos HSVP
-Data do Checkpoint: 19/02/2026
-Versão Atual: 3.1.2 (Estável - Stable Release)
+Data do Checkpoint: 28/05/2026
+Versão Atual: 3.1.3 (Estável - Governança de Infraestrutura & DNS)
 Status do Repositório: Sincronizado com a branch main no GitHub
 
-✅ 1. O que construímos no Frontend (React/Vite)
-UX Híbrida (Interface Inteligente): O sistema identifica se o usuário está no computador ou celular.
+✅ 1. Frontend (React/Vite) & UX Híbrida
+- UX Híbrida (Interface Inteligente): O sistema identifica se o usuário está no computador ou celular de forma nativa.
+- Desktop (>768px): Cards com efeito de levitação 3D, rotação e brilho (Glow) azulado ao passar o mouse.
+- Mobile (<768px): Efeito "Tactile Press" (card encolhe simulando um botão físico) e Glow intenso ao toque, eliminando falhas de rotação.
+- Responsividade Avançada: Implementação de um "Grid Inteligente" usando CSS auto-fill e controle rígido das proporções das capas dos protocolos com aspect-ratio: 3/4, evitando distorções.
+- Painel Admin: Sistema de busca filtrada em tempo real por categorias, envio em massa de PDFs, otimização das miniaturas e formulários alinhados.
 
-Desktop (>768px): Cards com efeito de levitação 3D, rotação e brilho (Glow) azulado ao passar o mouse.
+🌐 2. Infraestrutura, API & Resolução de Nomes (DNS)
+- API Auto-Detect: Lógica no apiService.js que detecta o IP do navegador automaticamente usando window.location.hostname. O sistema roda de forma simultânea em localhost:3001 e na rede do hospital sem configurações manuais no código.
+- Novo Padrão de Hostname: Migração definitiva da identificação da máquina física de trabalho do Marcelo para o padrão corporativo atual (DIWGP-0004.saovicente.lan).
+- Implantação de CNAME no Active Directory: Criação e homologação do registro do tipo Alias (CNAME) chamado "protocolos" diretamente no servidor de DNS central do hospital (IWGP-ADDS02), dentro da zona 'saovicente.lan'.
+- Blindagem e Resiliência de Rede: O apelido foi mapeado para o hostname fixo da máquina, garantindo que mesmo que o roteador altere o IP dinâmico da máquina de trabalho do Marcelo (atualmente no IP 192.168.0.196), o acesso dos usuários não sofra interrupções.
+- Link Oficial Homologado na Home (192.168.0.11): http://protocolos.saovicente.lan:3001/ (garantindo resolução estável em 100% das estações, tablets assistenciais e Wi-Fi corporativo).
 
-Mobile (<768px): Efeito "Tactile Press" (card encolhe simulando um botão físico) e Glow intenso ao toque, sem falhas de rotação.
+⚙️ 3. Automação de Backend e Servidor
+- Servidor Unificado Node.js: Arquitetura sem dependência do Apache (XAMPP). O Node.js/Express 5 atua servindo a API e o build do Frontend via rota curinga (/.*/).
+- Processos em Segundo Plano: O sistema roda ininterruptamente como um serviço gerenciado em segundo plano pelo PM2 sob o nome "portal-protocolos".
+- Scripts Facilitadores (Batch):
+  * DEPLOY_AUTOMATICO.bat: Compila o Vite, limpa diretórios antigos, injeta a nova versão estável e reinicia o serviço no PM2 com 1 clique.
+  * BACKUP_TOTAL_V3.bat: Rotina redundante que gera o dump do Banco de Dados (MySQL) e salva o espelhamento completo do projeto nas unidades C: (Local) e E: (Disco Externo BlueFrog).
 
-Responsividade Impecável: Implementamos um "Grid Inteligente" usando auto-fill e garantimos que as capas dos protocolos não fiquem esticadas ou achatadas através do aspect-ratio: 3/4.
+📘 4. Documentação, Governança e Ecossistema (Google Workspace)
+- Sincronização de Documentação: O arquivo README.md e o painel visual do sistema foram atualizados para refletir a nova versão 3.1.3.
+- Alinhamento do Hub Central: Preparação da topologia de rede para integração transparente com o Hub Centralizador do hospital desenvolvido em Google Sites. O botão de "Protocolos Internos" passa a apontar para a URL amigável e qualificada, abstraindo a complexidade técnica para médicos e enfermeiros.
+- Segurança de Registro: Configuração do CNAME com restrições de escrita no Active Directory, impedindo alterações não autorizadas por usuários comuns da rede corporativa (LGPD Compliance).
 
-Painel Admin: Sistema de busca filtrada em tempo real, envio em massa de PDFs, correção dos tamanhos das miniaturas e formulários alinhados.
+🚀 Status Final: INFRAESTRUTURA HOMOLOGADA E PRONTA PARA EXPANSÃO!
+O Portal de Protocolos da BlueFrog Smart Solutions está totalmente integrado à rede corporativa do Hospital São Vicente de Paulo, oferecendo alto desempenho, alta disponibilidade local e link limpo.
 
-🌐 2. O que resolvemos na Infraestrutura e API
-API Auto-Detect (v3.1.2): Criamos uma lógica no apiService.js que detecta o IP do navegador automaticamente usando window.location.hostname. O sistema agora roda perfeitamente tanto em localhost:3001 (Dev) quanto na rede do hospital (Produção) sem precisar alterar o código.
-
-Rede Blindada (Hostname): Alteramos o botão do portal principal do hospital (Servidor .11) para apontar para o nome da máquina (http://ti2:3001/) em vez do IP. Isso evita quedas do sistema caso o roteador mude o IP dinâmico da sua máquina.
-
-⚙️ 3. O que automatizamos no Backend e Servidor
-Servidor Unificado Node.js: Removemos a dependência do Apache (XAMPP). O Node.js/Express 5 agora serve tanto a API quanto o site visual (Frontend) através de uma rota coringa (/.*/).
-
-Processos em Segundo Plano: O sistema roda ininterruptamente como um serviço Windows chamado "portal-protocolos" gerenciado pelo PM2.
-
-Scripts Facilitadores (Batch):
-
-DEPLOY_AUTOMATICO.bat: Compila o Vite, limpa pastas antigas, copia a nova versão e reinicia o servidor com 1 clique.
-
-BACKUP_TOTAL_V3.bat: Sistema redundante que gera um dump do Banco de Dados (MySQL) e salva o projeto inteiro simultaneamente nas unidades C: (Disco Local) e E: (Disco Externo BlueFrog).
-
-📘 4. Documentação e Versionamento
-O README.md e o CONTEXTO_TECNICO.txt foram totalmente atualizados para refletir a versão 3.1.2.
-
-O rodapé do site foi ajustado para exibir corretamente a versão 3.1.2 para os usuários.
-
-Todo o código foi "commitado" de forma limpa (feat: atualizaçao para v3.1.2) e enviado para o seu repositório remoto no GitHub.
-
-🚀 Status Final: PRONTO PARA USO!
-O projeto está robusto, responsivo, seguro e auto-gerenciável. Você tem um produto de altíssima qualidade rodando no hospital.
-
-Quando você voltar, começaremos a planejar a Versão 3.2.0 (Talvez com painel de métricas, envio de e-mails, ou novas animações?). Até lá, parabéns pelo excelente trabalho, Marcelo! 🐸
+Próxima Parada (Versão 3.2.0): Planejamento da governança e centralização das planilhas legadas (desde 2013) utilizando o ecossistema Low-Code (AppSheet, Google Forms/Sheets, Looker Studio).

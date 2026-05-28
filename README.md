@@ -10,6 +10,10 @@ Sistema Full Stack desenvolvido para o **Hospital São Vicente de Paulo**, centr
 
 ## 🚀 Histórico de Versões
 
+### v3.1.3 (Atual - Governança de Infraestrutura & DNS)
+* 🌐 **Governança de Rede:** Migração do Hostname legado para o padrão corporativo definitivo (`DIWGP-0004`).
+* 🛣️ **Resolução de Nomes (DNS):** Criação e validação do CNAME `protocolos.saovicente.lan` no Active Directory (`IWGP-ADDS02`), isolando o frontend do hospital (Home no IP 192.168.0.11) de flutuações de IP no servidor da aplicação.
+
 ### v3.1.2 (Atual - Auto-Detect, Grid Fix & Infra)
 * **🌐 Resiliência de Rede:** Configuração de acesso via Hostname (`http://ti2:3001/`) no Portal principal, garantindo estabilidade mesmo com IPs dinâmicos (DHCP).
 * **📡 API Inteligente:** Implementação de detecção automática de IP. O sistema agora funciona simultaneamente em `localhost` e na Rede sem necessidade de configuração manual.
@@ -51,10 +55,10 @@ Aqui estão algumas telas do sistema em funcionamento:
 ### Inicialização Automática
 O sistema roda em segundo plano através do **PM2**.
 
-* **Acesso Oficial na Intranet (Recomendado):** `http://ti2:3001/`
-    * *Nota: Usamos o Hostname para evitar quebras caso o roteador mude o IP do servidor.*
-* **Acesso no Servidor Físico (Local):** `http://localhost:3001`
-* **Acesso via IP Temporário:** Caso precise acessar via IP, verifique o endereço atual com o comando `ipconfig` no terminal do servidor. (Ex: `http://192.168.0.XXX:3001`)
+* **Acesso Oficial na Intranet (Recomendado):** http://protocolos.saovicente.lan:3001/
+  **Nota: Utilizamos o Alias (CNAME) apontando para o Hostname corporativo (DIWGP-0004) para blindar o link caso o roteador mude o IP dinâmico do servidor local.*
+* **Acesso no Servidor Físico (Local):** http://localhost:3001
+* **Acesso via IP Temporário:** Caso precise testar diretamente o nó da rede, verifique o endereço atual com o comando `ipconfig` (Ex: http://192.168.0.196:3001)
 
 ---
 
