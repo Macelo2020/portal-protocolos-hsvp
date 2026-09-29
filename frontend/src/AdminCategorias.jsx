@@ -1,98 +1,189 @@
 // src/AdminCategorias.jsx
-// VERSÃO FINAL CORRIGIDA: Sem IP Fixo
+// ==================================================================
+// MÓDULO: Gerenciamento Administrativo de Categorias
+// ARQUITETURA: React Hooks (useState) + Exclusão Inteligente em Lote
+// ==================================================================
 
-import { useState } from 'react';
-// 1. IMPORTAÇÃO CORRETA
+import { useState, useRef } from 'react';
 import { useApiService, IMAGES_URL } from './services/apiService';
 
 function AdminCategorias({ categorias, recarregarCategorias }) {
-
-  // 2. REMOVIDO: const BACKEND_URL = ...
-  
   const { apiFetch } = useApiService();
 
+  // Estados locais para criação de nova categoria
   const [novoNome, setNovoNome] = useState('');
-  const [novaImagem, setNovaImagem] = useState(null); 
+  const [novaImagem, setNovaImagem] = useState(null);
+  const [carregando, setCarregando] = useState(false);
+  const inputArquivoRef = useRef(null);
 
+  // Estados locais para controle de edição em linha
   const [idEditando, setIdEditando] = useState(null); 
   const [nomeEditando, setNomeEditando] = useState('');
   const [novaImagemEditando, setNovaImagemEditando] = useState(null);
 
-  const handleCriarCategoria = (evento) => {
+  // =========================================================
+  // CRIAÇÃO DE NOVA CATEGORIA (POST)
+  // =========================================================
+  const handleCriarCategoria = async (evento) => {
     evento.preventDefault(); 
-    if (!novoNome) return alert('Por favor, preencha o Nome da categoria.');
+    
+    if (!novoNome.trim()) {
+      return alert('Por favor, informe o nome da categoria.');
+    }
 
-    const formData = new FormData();
-    formData.append('nome', novoNome);
-    if (novaImagem) formData.append('imagem', novaImagem); 
+    try {
+      setCarregando(true);
+      const formData = new FormData();
+      formData.append('nome', novoNome.trim());
+      if (novaImagem) {
+        formData.append('imagem', novaImagem);
+      }
 
-    apiFetch('categorias', { method: 'POST', body: formData }, true)
-    .then(() => {
-      setNovoNome(''); setNovaImagem(null);
-      recarregarCategorias(); alert('Categoria criada com sucesso!');
-    })
-    .catch(error => alert(`Erro: ${error.message}`));
+      await apiFetch('categorias', { method: 'POST', body: formData }, true);
+
+      setNovoNome('');
+      setNovaImagem(null);
+      if (inputArquivoRef.current) {
+        inputArquivoRef.current.value = '';
+      }
+
+      if (typeof recarregarCategorias === 'function') {
+        await recarregarCategorias();
+      }
+
+      alert('Categoria criada com sucesso!');
+    } catch (error) {
+      console.error('Falha ao criar categoria:', error);
+      alert(`Erro: ${error.message || 'Falha ao salvar a categoria.'}`);
+    } finally {
+      setCarregando(false);
+    }
   };
 
-  const handleSalvarEdicao = (evento, idDaCategoria) => {
+  // =========================================================
+  // EDIÇÃO DE CATEGORIA (PUT)
+  // =========================================================
+  const handleSalvarEdicao = async (evento, idDaCategoria) => {
     evento.preventDefault(); 
     
-    const formData = new FormData();
-    formData.append('nome', nomeEditando); 
-    if (novaImagemEditando) formData.append('imagem', novaImagemEditando);
-    
-    apiFetch(`categorias/${idDaCategoria}`, { method: 'PUT', body: formData })
-    .then(() => {
-      setIdEditando(null); setNomeEditando(''); setNovaImagemEditando(null); 
-      recarregarCategorias(); alert('Categoria atualizada com sucesso!');
-    })
-    .catch(error => alert(error.message));
+    if (!nomeEditando.trim()) {
+      return alert('O nome da categoria não pode ficar vazio.');
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('nome', nomeEditando.trim()); 
+      if (novaImagemEditando) {
+        formData.append('imagem', novaImagemEditando);
+      }
+      
+      await apiFetch(`categorias/${idDaCategoria}`, { method: 'PUT', body: formData });
+      
+      setIdEditando(null); 
+      setNomeEditando(''); 
+      setNovaImagemEditando(null); 
+      
+      if (typeof recarregarCategorias === 'function') {
+        await recarregarCategorias();
+      }
+      
+      alert('Categoria atualizada com sucesso!');
+    } catch (error) {
+      console.error('Falha ao atualizar categoria:', error);
+      alert(`Erro: ${error.message || 'Falha ao atualizar.'}`);
+    }
   };
 
   const handleAbrirEdicao = (cat) => {
-    setIdEditando(cat.id); setNomeEditando(cat.nome); setNovaImagemEditando(null); 
+    setIdEditando(cat.id); 
+    setNomeEditando(cat.nome); 
+    setNovaImagemEditando(null); 
   };
 
   const handleCancelarEdicao = () => {
-    setIdEditando(null); setNomeEditando(''); setNovaImagemEditando(null);
+    setIdEditando(null); 
+    setNomeEditando(''); 
+    setNovaImagemEditando(null);
   };
 
-  const handleDeletarCategoria = (id, nome) => {
+  // =========================================================
+  // EXCLUSÃO INTELIGENTE DE CATEGORIA (DELETE)
+  // =========================================================
+  const handleDeletarCategoria = async (id, nome) => {
     if (!window.confirm(`Tem certeza que deseja deletar a categoria "${nome}"?`)) return;
 
-    apiFetch(`categorias/${id}`, { method: 'DELETE' })
-    .then(() => { recarregarCategorias(); alert('Deletado com sucesso!'); })
-    .catch(e => alert(e.message));
+    try {
+      // 1. Tenta a exclusão padrão (o backend bloqueia se houver protocolos vinculados)
+      await apiFetch(`categorias/${id}`, { method: 'DELETE' });
+      
+      if (typeof recarregarCategorias === 'function') {
+        await recarregarCategorias();
+      }
+      
+      alert('Categoria deletada com sucesso!');
+    } catch (error) {
+      // 2. Se o backend retornar que existem protocolos, oferece a exclusão em massa inteligente
+      if (error.message && error.message.includes('protocolo(s) vinculado(s)')) {
+        const confirmarMassa = window.confirm(
+          `${error.message}\n\nDeseja apagar esta categoria e TODOS os protocolos contidos nela de uma só vez?`
+        );
+
+        if (confirmarMassa) {
+          try {
+            // Força a exclusão em massa enviando ?forcar=true
+            await apiFetch(`categorias/${id}?forcar=true`, { method: 'DELETE' });
+            
+            if (typeof recarregarCategorias === 'function') {
+              await recarregarCategorias();
+            }
+            
+            alert('Categoria e todos os seus protocolos foram excluídos com sucesso!');
+          } catch (errMassa) {
+            console.error('Falha na exclusão em massa:', errMassa);
+            alert(`Erro na exclusão em massa: ${errMassa.message}`);
+          }
+        }
+      } else {
+        console.error('Falha ao deletar categoria:', error);
+        alert(`Erro: ${error.message || 'Falha ao deletar.'}`);
+      }
+    }
   };
 
   return (
     <div className="admin-painel">
       <h2>Gerenciar Categorias</h2>
       
+      {/* Formulário de Inclusão */}
       <form onSubmit={handleCriarCategoria} className="admin-form">
         <h3>Adicionar Nova Categoria</h3>
         
         <label>Nome:</label>
         <input 
           type="text" 
-          placeholder="Nome da categoria" 
+          placeholder="Ex: NIR - Núcleo Interno de Regulação" 
           value={novoNome} 
           onChange={e => setNovoNome(e.target.value)}
+          disabled={carregando}
         />
         
         <label>Imagem da Capa:</label>
         <input 
+          ref={inputArquivoRef}
           type="file" 
           accept="image/*"
           onChange={e => setNovaImagem(e.target.files[0])}
-          key={novaImagem ? 'img-ok' : 'img-no'}
+          disabled={carregando}
         />
 
-        <button type="submit" className="btn-salvar">Salvar Categoria</button>
+        <button type="submit" className="btn-salvar" disabled={carregando}>
+          {carregando ? 'Salvando...' : 'Salvar Categoria'}
+        </button>
       </form>
 
       <hr />
 
+      {/* Listagem com Opções de Edição/Exclusão */}
       <h3>Categorias Existentes</h3>
       <ul>
         {categorias.map(cat => (
@@ -108,7 +199,7 @@ function AdminCategorias({ categorias, recarregarCategorias }) {
                 <input 
                   type="file" 
                   accept="image/*" 
-                  onChange={e => setNovaImagemEditando(e.target.files[0])} 
+                  onChange={e => novaImagemEditando(e.target.files[0])} 
                   className="input-editar-imagem"
                 />
                 <button type="submit" className="btn-salvar">Salvar</button>
@@ -116,9 +207,8 @@ function AdminCategorias({ categorias, recarregarCategorias }) {
               </form>
             ) : (
               <>
-                <div style={{display:'flex', alignItems:'center'}}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                    {cat.nome_imagem_capa ? (
-                     // 3. USO DE IMAGES_URL
                      <img 
                        src={`${IMAGES_URL}/${cat.nome_imagem_capa}`} 
                        alt={cat.nome} 

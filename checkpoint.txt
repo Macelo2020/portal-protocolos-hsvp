@@ -1,35 +1,25 @@
 📝 CHECKPOINT DE DESENVOLVIMENTO: Portal de Protocolos HSVP
-Data do Checkpoint: 28/05/2026
-Versão Atual: 3.1.3 (Estável - Governança de Infraestrutura & DNS)
+Data do Checkpoint: 29/09/2026
+Versão Atual: 3.1.4 (Estável - Exclusão Inteligente & Gestão de Integridade)
 Status do Repositório: Sincronizado com a branch main no GitHub
 
-✅ 1. Frontend (React/Vite) & UX Híbrida
-- UX Híbrida (Interface Inteligente): O sistema identifica se o usuário está no computador ou celular de forma nativa.
-- Desktop (>768px): Cards com efeito de levitação 3D, rotação e brilho (Glow) azulado ao passar o mouse.
-- Mobile (<768px): Efeito "Tactile Press" (card encolhe simulando um botão físico) e Glow intenso ao toque, eliminando falhas de rotação.
-- Responsividade Avançada: Implementação de um "Grid Inteligente" usando CSS auto-fill e controle rígido das proporções das capas dos protocolos com aspect-ratio: 3/4, evitando distorções.
-- Painel Admin: Sistema de busca filtrada em tempo real por categorias, envio em massa de PDFs, otimização das miniaturas e formulários alinhados.
+✅ 1. Backend, Segurança Relacional & Exclusão Inteligente
+- Rota DELETE de Categorias Aprimorada: Implementação de proteção contra violação de chave estrangeira (Foreign Key Constraint).
+- Validação Prévia de Dependências: O sistema verifica se existem protocolos vinculados à categoria antes de permitir a exclusão.
+- Exclusão em Lote Controlada (?forcar=true): Caso a categoria contenha ficheiros PDF, a interface emite um alerta humanizado informando a contagem e permitindo que o administrador execute a remoção em massa (limpeza de favoritos, registos na tabela de protocolos, apagamento dos binários físicos do disco via fs.unlink e exclusão da categoria pai) com apenas dois cliques.
+- Auto-Healing de Diretórios: Garantia contínua de integridade das pastas public/images e public/pdfs no servidor Node.js/Express.
 
 🌐 2. Infraestrutura, API & Resolução de Nomes (DNS)
-- API Auto-Detect: Lógica no apiService.js que detecta o IP do navegador automaticamente usando window.location.hostname. O sistema roda de forma simultânea em localhost:3001 e na rede do hospital sem configurações manuais no código.
-- Novo Padrão de Hostname: Migração definitiva da identificação da máquina física de trabalho do Marcelo para o padrão corporativo atual (DIWGP-0004.saovicente.lan).
-- Implantação de CNAME no Active Directory: Criação e homologação do registro do tipo Alias (CNAME) chamado "protocolos" diretamente no servidor de DNS central do hospital (IWGP-ADDS02), dentro da zona 'saovicente.lan'.
-- Blindagem e Resiliência de Rede: O apelido foi mapeado para o hostname fixo da máquina, garantindo que mesmo que o roteador altere o IP dinâmico da máquina de trabalho do Marcelo (atualmente no IP 192.168.0.196), o acesso dos usuários não sofra interrupções.
-- Link Oficial Homologado na Home (192.168.0.11): http://protocolos.saovicente.lan:3001/ (garantindo resolução estável em 100% das estações, tablets assistenciais e Wi-Fi corporativo).
+- API Auto-Detect: Lógica no apiService.js que deteta o IP do navegador automaticamente usando window.location.hostname.
+- Padrão de Hostname Definitivo: Identificação vinculada ao padrão corporativo DIWGP-0004.saovicente.lan.
+- Blindagem de Rede: O CNAME "protocolos" no servidor de DNS central (IWGP-ADDS02) garante acesso estável através de http://protocolos.saovicente.lan:3001/.
 
-⚙️ 3. Automação de Backend e Servidor
-- Servidor Unificado Node.js: Arquitetura sem dependência do Apache (XAMPP). O Node.js/Express 5 atua servindo a API e o build do Frontend via rota curinga (/.*/).
-- Processos em Segundo Plano: O sistema roda ininterruptamente como um serviço gerenciado em segundo plano pelo PM2 sob o nome "portal-protocolos".
-- Scripts Facilitadores (Batch):
-  * DEPLOY_AUTOMATICO.bat: Compila o Vite, limpa diretórios antigos, injeta a nova versão estável e reinicia o serviço no PM2 com 1 clique.
-  * BACKUP_TOTAL_V3.bat: Rotina redundante que gera o dump do Banco de Dados (MySQL) e salva o espelhamento completo do projeto nas unidades C: (Local) e E: (Disco Externo BlueFrog).
+⚙️ 3. Automação, Servidor & Scripts
+- Servidor Unificado Node.js/Express 5 gerenciado em segundo plano pelo PM2.
+- Rotinas Automatizadas (Batch): DEPLOY_AUTOMATICO.bat e BACKUP_TOTAL_V3.bat (redundância em C: e E:).
 
-📘 4. Documentação, Governança e Ecossistema (Google Workspace)
-- Sincronização de Documentação: O arquivo README.md e o painel visual do sistema foram atualizados para refletir a nova versão 3.1.3.
-- Alinhamento do Hub Central: Preparação da topologia de rede para integração transparente com o Hub Centralizador do hospital desenvolvido em Google Sites. O botão de "Protocolos Internos" passa a apontar para a URL amigável e qualificada, abstraindo a complexidade técnica para médicos e enfermeiros.
-- Segurança de Registro: Configuração do CNAME com restrições de escrita no Active Directory, impedindo alterações não autorizadas por usuários comuns da rede corporativa (LGPD Compliance).
+📘 4. Governança e Ecossistema
+- Sincronização oficial da documentação no README.md e atualização do ecossistema de controle no GitHub.
 
-🚀 Status Final: INFRAESTRUTURA HOMOLOGADA E PRONTA PARA EXPANSÃO!
-O Portal de Protocolos da BlueFrog Smart Solutions está totalmente integrado à rede corporativa do Hospital São Vicente de Paulo, oferecendo alto desempenho, alta disponibilidade local e link limpo.
-
-Próxima Parada (Versão 3.2.0): Planejamento da governança e centralização das planilhas legadas (desde 2013) utilizando o ecossistema Low-Code (AppSheet, Google Forms/Sheets, Looker Studio).
+🚀 Status Final: SISTEMA BLINDADO E OPERACIONAL!
+O Portal de Protocolos da BlueFrog Smart Solutions atinge o ápice da estabilidade e segurança de dados para o ambiente hospitalar.

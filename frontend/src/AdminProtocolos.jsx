@@ -1,17 +1,21 @@
 // src/AdminProtocolos.jsx
-// VERSÃO 4.0: Com Barra de Pesquisa e Alinhamento Visual Melhorado
+// ==================================================================
+// PROJETO: Portal de Protocolos HSVP (Frontend v4.1 - Reativo)
+// ARQUITETURA: React Hooks + Sincronização Unificada de Estado
+// ==================================================================
 
 import { useState, useEffect } from 'react';
 import { useApiService, IMAGES_URL } from './services/apiService';
 
-function AdminProtocolos() {
+// 🛠️ CORREÇÃO CRUCIAL: Recebe as props 'categorias' e 'recarregarProtocolosAdmin' do componente Pai (PaginaAdmin)
+function AdminProtocolos({ categorias = [], listaAdminProtocolos = [], recarregarProtocolosAdmin }) {
+  // Lista local de protocolos para permitir recarregamento após inserção ou exclusão
   const [protocolos, setProtocolos] = useState([]);
-  const [categorias, setCategorias] = useState([]);
   
-  // Novo Estado para a Busca
+  // Estado para busca dinâmica em tempo real
   const [termoBusca, setTermoBusca] = useState('');
 
-  // Estados do Formulário
+  // Estados dos campos do formulário
   const [titulo, setTitulo] = useState('');
   const [categoriaId, setCategoriaId] = useState('');
   const [arquivosPdf, setArquivosPdf] = useState([]); 
@@ -21,13 +25,22 @@ function AdminProtocolos() {
   
   const { http } = useApiService();
 
+  // Sincroniza a lista com as props recebidas do componente pai
   useEffect(() => {
-    carregarTudo();
-  }, []);
+    if (listaAdminProtocolos && listaAdminProtocolos.length > 0) {
+      setProtocolos(listaAdminProtocolos);
+    } else {
+      carregarProtocolos();
+    }
+  }, [listaAdminProtocolos]);
 
-  const carregarTudo = () => {
-    http.getPublic('protocolos').then(setProtocolos);
-    http.getPublic('categorias').then(setCategorias);
+  // Função exclusiva para buscar protocolos (categorias agora vêm reativamente do pai)
+  const carregarProtocolos = () => {
+    if (typeof recarregarProtocolosAdmin === 'function') {
+      recarregarProtocolosAdmin();
+    } else {
+      http.getPublic('protocolos').then(setProtocolos).catch(console.error);
+    }
   };
 
   const handleFileChange = (e) => {
@@ -47,7 +60,7 @@ function AdminProtocolos() {
       setCategoriaId(protocolo.categoria_id);
       setArquivosPdf([]); 
       setImagemCapa(null);
-      // Rola a tela para cima suavemente para o usuário editar
+      // UX: Desloca o ecrã suavemente até ao formulário
       window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -66,7 +79,7 @@ function AdminProtocolos() {
     const formData = new FormData();
     formData.append('categoria_id', categoriaId);
 
-    // Lógica de Edição
+    // 1. Fluxo de Edição de Protocolo Existente
     if (editandoId) {
         formData.append('titulo', titulo);
         if (arquivosPdf.length > 0) formData.append('arquivo_pdf', arquivosPdf[0]);
@@ -76,7 +89,7 @@ function AdminProtocolos() {
             await http.put(`protocolos/${editandoId}`, formData); 
             alert("Protocolo atualizado com sucesso!");
             handleCancelarEdicao();
-            carregarTudo();
+            carregarProtocolos();
         } catch (error) {
             console.error(error);
             alert("Erro ao atualizar.");
@@ -84,25 +97,25 @@ function AdminProtocolos() {
         return;
     }
 
-    // Lógica de Criação (Novo)
+    // 2. Fluxo de Criação (Novo Protocolo)
     if (arquivosPdf.length === 0) {
         alert("Selecione pelo menos um arquivo PDF.");
         return;
     }
 
     if (arquivosPdf.length > 1) {
-        // Envio em Massa
+        // Envio em Lote (Massa)
         arquivosPdf.forEach(file => formData.append('arquivos_pdf', file));
         try {
             await http.postMultiPart('protocolos/massa', formData);
-            alert("Envio em massa concluído!");
+            alert("Envio em massa concluído com sucesso!");
             limparFormulario();
-            carregarTudo();
+            carregarProtocolos();
         } catch (error) {
             alert("Erro no envio em massa.");
         }
     } else {
-        // Envio Único
+        // Envio Individual
         formData.append('arquivo_pdf', arquivosPdf[0]);
         const tituloFinal = titulo || arquivosPdf[0].name.replace('.pdf','');
         formData.append('titulo', tituloFinal);
@@ -110,9 +123,9 @@ function AdminProtocolos() {
 
         try {
             await http.postMultiPart('protocolos', formData);
-            alert("Salvo com sucesso!");
+            alert("Protocolo salvo com sucesso!");
             limparFormulario();
-            carregarTudo();
+            carregarProtocolos();
         } catch (error) {
             alert("Erro ao salvar.");
         }
@@ -124,7 +137,7 @@ function AdminProtocolos() {
       http.delete(`protocolos/${id}`)
         .then(() => {
             alert("Excluído com sucesso!");
-            carregarTudo();
+            carregarProtocolos();
         })
         .catch(() => alert("Erro ao excluir."));
     }
@@ -149,7 +162,7 @@ function AdminProtocolos() {
       return `${IMAGES_URL}/capa_generica_protocolo.png`;
   };
 
-  // --- LÓGICA DE FILTRO (BUSCA) ---
+  // Filtragem dinâmica para pesquisa sem chamadas extras ao servidor
   const protocolosFiltrados = protocolos.filter(p => 
       p.titulo.toLowerCase().includes(termoBusca.toLowerCase())
   );
@@ -165,28 +178,39 @@ function AdminProtocolos() {
           )}
       </div>
 
-      {/* --- FORMULÁRIO --- */}
+      {/* --- FORMULÁRIO DE GESTÃO --- */}
       <form className="admin-form-protocolo" onSubmit={handleSalvar} style={{border: editandoId ? '2px solid #3b82f6' : '1px solid #ddd'}}>
         
-        {/* Linha 1: Categoria e Título */}
+        {/* Linha 1: Seleção de Categoria e Título */}
         <div className="form-linha">
             <div className="form-coluna">
                 <label>Categoria:</label>
+                {/* O <select> agora consome diretamente a lista atualizada em tempo real */}
                 <select value={categoriaId} onChange={e => setCategoriaId(e.target.value)} required style={{padding: 10}}>
                   <option value="">Selecione...</option>
-                  {categorias.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
+                  {categorias.map(c => (
+                    <option key={c.id} value={c.id}>
+                      {c.nome}
+                    </option>
+                  ))}
                 </select>
             </div>
             
             {(editandoId || arquivosPdf.length === 1) && (
                 <div className="form-coluna">
                     <label>Título do Protocolo:</label>
-                    <input type="text" value={titulo} onChange={e => setTitulo(e.target.value)} placeholder="Ex: Protocolo de AVC" style={{padding: 10}} />
+                    <input 
+                      type="text" 
+                      value={titulo} 
+                      onChange={e => setTitulo(e.target.value)} 
+                      placeholder="Ex: Protocolo de AVC" 
+                      style={{padding: 10}} 
+                    />
                 </div>
             )}
         </div>
 
-        {/* Linha 2: Arquivos (PDF e Imagem Lado a Lado) */}
+        {/* Linha 2: Uploads (PDF e Imagem de Capa) */}
         <div className="form-linha">
             <div className="form-coluna">
                 <label>
@@ -228,10 +252,9 @@ function AdminProtocolos() {
 
       <hr style={{margin: '30px 0', borderTop:'1px solid #eee'}}/>
 
-      {/* --- LISTA COM BUSCA --- */}
+      {/* --- LISTA DE PROTOCOLOS --- */}
       <h3>Lista de Protocolos Cadastrados ({protocolosFiltrados.length})</h3>
       
-      {/* BARRA DE PESQUISA NOVA */}
       <input 
           type="text" 
           placeholder="🔍 Buscar protocolo para editar ou excluir..." 
