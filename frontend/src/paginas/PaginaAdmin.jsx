@@ -1,18 +1,20 @@
 // src/paginas/PaginaAdmin.jsx
-// VERSÃO FINAL: Compatível com o novo apiService (http.getPublic)
+// ==================================================================
+// MÓDULO: Página de Administração Centralizada (Com Gestão de Capas no Topo)
+// ARQUITETURA: React Hooks + Componentes Modulares Administrativos
+// ==================================================================
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexto/AuthContext'; 
 import { useApiService } from '../services/apiService'; 
 import AdminCategorias from '../AdminCategorias'; 
 import AdminProtocolos from '../AdminProtocolos';
+import AdminConfiguracoes from '../AdminConfiguracoes'; 
 import '../App.css';
 
 function PaginaAdmin() {
 
   const { usuario } = useAuth();
-  
-  // CORREÇÃO: Usamos 'http' em vez de 'publicData'
   const { http } = useApiService(); 
 
   const isMaster = usuario && usuario.funcao === 'admin_master';
@@ -20,16 +22,13 @@ function PaginaAdmin() {
   const [categorias, setCategorias] = useState([]);
   const [listaAdminProtocolos, setListaAdminProtocolos] = useState([]);
 
-  // --- Funções de Dados ---
   const recarregarCategorias = () => {
-    // CORREÇÃO: http.getPublic('categorias')
     http.getPublic('categorias')
       .then(dados => setCategorias(dados))
       .catch(error => console.error("Erro categorias:", error));
   };
 
   const recarregarProtocolosAdmin = () => {
-    // CORREÇÃO: http.getPublic('protocolos')
     http.getPublic('protocolos')
       .then(dados => setListaAdminProtocolos(dados))
       .catch(error => console.error("Erro protocolos:", error));
@@ -44,23 +43,35 @@ function PaginaAdmin() {
     <div className="conteudo-pagina" style={{padding: 30, overflowY: 'auto', height: 'calc(100vh - 85px)'}}>
       <h1 style={{marginTop: 0}}>Painel de Administração</h1>
       
-      {usuario && isMaster ? (
+      {usuario ? (
         <p style={{background: '#dcfce7', padding: 10, borderRadius: 5, color: '#166534'}}>
-            Logado como: <strong>{usuario.username}</strong> (Acesso Total)
+            Logado como: <strong>{usuario.username}</strong> ({usuario.funcao || 'Administrador'})
         </p>
       ) : (
-        <p style={{background: '#e0f2fe', padding: 10, borderRadius: 5, color: '#075985'}}>
-            Logado como: <strong>{usuario ? usuario.username : 'Convidado'}</strong> (Gerente)
+        <p style={{background: '#fee2e2', padding: 10, borderRadius: 5, color: '#991b1b'}}>
+            Atenção: Utilizador não autenticado no contexto.
         </p>
       )}
-      
+
+      {/* --- SECÇÃO DE GESTÃO DINÂMICA DAS CAPAS PADRÃO (MOVIDA PARA O TOPO) --- */}
       {isMaster && (
-        <AdminCategorias 
-          categorias={categorias} 
-          recarregarCategorias={recarregarCategorias} 
-        />
+        <div style={{ background: '#ffffff', padding: '20px', borderRadius: '10px', boxShadow: '0 4px 10px rgba(0,0,0,0.05)', border: '1px solid #e2e8f0', marginBottom: '40px' }}>
+          <h2 style={{ color: '#004a9f', marginTop: 0 }}>🖼️ Gestão de Capas Padrão (Globais)</h2>
+          <AdminConfiguracoes />
+        </div>
       )}
       
+      <hr style={{ margin: '40px 0', border: '0', borderTop: '2px solid #cbd5e1' }} />
+
+      {/* Gestão de Categorias */}
+      <AdminCategorias 
+        categorias={categorias} 
+        recarregarCategorias={recarregarCategorias} 
+      />
+      
+      <hr style={{ margin: '40px 0', border: '0', borderTop: '2px solid #cbd5e1' }} />
+
+      {/* Gestão de Protocolos */}
       <AdminProtocolos 
         categorias={categorias} 
         listaAdminProtocolos={listaAdminProtocolos}

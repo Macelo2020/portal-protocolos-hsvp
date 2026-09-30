@@ -1,7 +1,7 @@
 // src/AdminCategorias.jsx
 // ==================================================================
 // MÓDULO: Gerenciamento Administrativo de Categorias
-// ARQUITETURA: React Hooks (useState) + Exclusão Inteligente em Lote
+// ARQUITETURA: React Hooks (useState) + Exclusão Inteligente + Edição de Capa
 // ==================================================================
 
 import { useState, useRef } from 'react';
@@ -61,7 +61,7 @@ function AdminCategorias({ categorias, recarregarCategorias }) {
   };
 
   // =========================================================
-  // EDIÇÃO DE CATEGORIA (PUT)
+  // EDIÇÃO DE CATEGORIA (PUT - Nome + Capa Opcional)
   // =========================================================
   const handleSalvarEdicao = async (evento, idDaCategoria) => {
     evento.preventDefault(); 
@@ -73,6 +73,8 @@ function AdminCategorias({ categorias, recarregarCategorias }) {
     try {
       const formData = new FormData();
       formData.append('nome', nomeEditando.trim()); 
+      
+      // Anexa a nova imagem de capa caso o administrador tenha selecionado uma
       if (novaImagemEditando) {
         formData.append('imagem', novaImagemEditando);
       }
@@ -113,7 +115,6 @@ function AdminCategorias({ categorias, recarregarCategorias }) {
     if (!window.confirm(`Tem certeza que deseja deletar a categoria "${nome}"?`)) return;
 
     try {
-      // 1. Tenta a exclusão padrão (o backend bloqueia se houver protocolos vinculados)
       await apiFetch(`categorias/${id}`, { method: 'DELETE' });
       
       if (typeof recarregarCategorias === 'function') {
@@ -122,7 +123,6 @@ function AdminCategorias({ categorias, recarregarCategorias }) {
       
       alert('Categoria deletada com sucesso!');
     } catch (error) {
-      // 2. Se o backend retornar que existem protocolos, oferece a exclusão em massa inteligente
       if (error.message && error.message.includes('protocolo(s) vinculado(s)')) {
         const confirmarMassa = window.confirm(
           `${error.message}\n\nDeseja apagar esta categoria e TODOS os protocolos contidos nela de uma só vez?`
@@ -130,7 +130,6 @@ function AdminCategorias({ categorias, recarregarCategorias }) {
 
         if (confirmarMassa) {
           try {
-            // Força a exclusão em massa enviando ?forcar=true
             await apiFetch(`categorias/${id}?forcar=true`, { method: 'DELETE' });
             
             if (typeof recarregarCategorias === 'function') {
@@ -196,10 +195,11 @@ function AdminCategorias({ categorias, recarregarCategorias }) {
                   onChange={e => setNomeEditando(e.target.value)} 
                   className="input-editar-nome"
                 />
+                {/* Correção aplicada aqui: Chamada correta para setNovaImagemEditando */}
                 <input 
                   type="file" 
                   accept="image/*" 
-                  onChange={e => novaImagemEditando(e.target.files[0])} 
+                  onChange={e => setNovaImagemEditando(e.target.files[0])} 
                   className="input-editar-imagem"
                 />
                 <button type="submit" className="btn-salvar">Salvar</button>

@@ -1,25 +1,16 @@
 📝 CHECKPOINT DE DESENVOLVIMENTO: Portal de Protocolos HSVP
-Data do Checkpoint: 29/09/2026
-Versão Atual: 3.1.4 (Estável - Exclusão Inteligente & Gestão de Integridade)
-Status do Repositório: Sincronizado com a branch main no GitHub
+Data do Checkpoint: 30/09/2026
+Versão Atual: 3.6.0 (Estável - Identidade Visual Dinâmica, Capas no Topo & Fallback Global)
+Status do Repositório: Pronto para sincronização com a branch main no GitHub
 
-✅ 1. Backend, Segurança Relacional & Exclusão Inteligente
-- Rota DELETE de Categorias Aprimorada: Implementação de proteção contra violação de chave estrangeira (Foreign Key Constraint).
-- Validação Prévia de Dependências: O sistema verifica se existem protocolos vinculados à categoria antes de permitir a exclusão.
-- Exclusão em Lote Controlada (?forcar=true): Caso a categoria contenha ficheiros PDF, a interface emite um alerta humanizado informando a contagem e permitindo que o administrador execute a remoção em massa (limpeza de favoritos, registos na tabela de protocolos, apagamento dos binários físicos do disco via fs.unlink e exclusão da categoria pai) com apenas dois cliques.
-- Auto-Healing de Diretórios: Garantia contínua de integridade das pastas public/images e public/pdfs no servidor Node.js/Express.
+✅ 1. Identidade Visual Dinâmica & Capas Padrão Globais
+- Reposicionamento de AdminConfiguracoes para o Topo da PaginaAdmin.jsx, melhorando significativamente a UX do administrador.
+- Criação de rotas dedicadas no backend: POST /api/configuracoes/capa-padrao-categoria e POST /api/configuracoes/capa-padrao-protocolo.
+- Fallback inteligente integrado em PaginaHome.jsx, garantindo que categorias sem imagem própria renderizem default_categoria.png em vez de placeholders textuais.
 
-🌐 2. Infraestrutura, API & Resolução de Nomes (DNS)
-- API Auto-Detect: Lógica no apiService.js que deteta o IP do navegador automaticamente usando window.location.hostname.
-- Padrão de Hostname Definitivo: Identificação vinculada ao padrão corporativo DIWGP-0004.saovicente.lan.
-- Blindagem de Rede: O CNAME "protocolos" no servidor de DNS central (IWGP-ADDS02) garante acesso estável através de http://protocolos.saovicente.lan:3001/.
-
-⚙️ 3. Automação, Servidor & Scripts
-- Servidor Unificado Node.js/Express 5 gerenciado em segundo plano pelo PM2.
+🌐 2. Infraestrutura & Servidor Unificado
+- Servidor Node.js/Express gerenciado em segundo plano pelo PM2.
 - Rotinas Automatizadas (Batch): DEPLOY_AUTOMATICO.bat e BACKUP_TOTAL_V3.bat (redundância em C: e E:).
 
-📘 4. Governança e Ecossistema
-- Sincronização oficial da documentação no README.md e atualização do ecossistema de controle no GitHub.
-
-🚀 Status Final: SISTEMA BLINDADO E OPERACIONAL!
-O Portal de Protocolos da BlueFrog Smart Solutions atinge o ápice da estabilidade e segurança de dados para o ambiente hospitalar.
+🚀 Status Final: SISTEMA EVOLUÍDO E TOTALMENTE FUNCIONAL!
+O Portal de Protocolos da BlueFrog Smart Solutions atinge um novo patamar de excelência estética e operacional para o ambiente hospitalar.

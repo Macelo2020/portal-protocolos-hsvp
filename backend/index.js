@@ -1,5 +1,5 @@
 // ==================================================================
-// PROJETO: Portal de Protocolos HSVP (Backend v13.3 - Exclusão Inteligente)
+// PROJETO: Portal de Protocolos HSVP (Backend v13.5 - Corrigido)
 // ARQUITETURA: Servidor Unificado Node.js + Express + MySQL + Multer
 // ==================================================================
 
@@ -25,7 +25,6 @@ app.use(cors({
 app.use(express.json()); 
 
 // --- 2. CONEXÃO COM O BANCO DE DADOS (MySQL) ---
-// Mantido o nome oficial da base de dados do hospital: portal_protocolos
 const pool = mysql.createPool({
   host: 'localhost', 
   user: 'root', 
@@ -42,7 +41,6 @@ const pool = mysql.createPool({
 const connection = pool; 
 
 // --- 3. INFRAESTRUTURA DE PASTAS (AUTO-HEALING) ---
-// Garante caminhos absolutos e impede falhas de ENOENT
 const dirImages = path.join(__dirname, 'public', 'images');
 const dirPdfs = path.join(__dirname, 'public', 'pdfs');
 
@@ -55,14 +53,13 @@ if (!fs.existsSync(dirPdfs)) {
     console.log('📁 Auto-Healing: Diretório public/pdfs criado com sucesso.');
 }
 
-// Serve arquivos estáticos enviados pelos usuários
+// Serve ficheiros estáticos
 app.use('/images', express.static(dirImages));
 app.use('/pdfs', express.static(dirPdfs));
 
 // --- 4. CONFIGURAÇÃO DE UPLOAD RESILIENTE (MULTER) ---
 const superStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // Encaminha capas para images e documentos clínicos para pdfs
     let targetFolder = dirPdfs;
     if (['imagem_capa', 'imagem'].includes(file.fieldname)) {
         targetFolder = dirImages;
@@ -81,10 +78,47 @@ const superStorage = multer.diskStorage({
     }
   }
 });
-
 const upload = multer({ storage: superStorage, limits: { fileSize: 50 * 1024 * 1024 } });
 
-// --- 5. MIDDLEWARES DE AUTENTICAÇÃO E PERMISSÕES ---
+// --- 4.1 CONFIGURAÇÃO DE UPLOAD PARA CAPAS PADRÃO ---
+const NOME_ARQUIVO_PADRAO_CAT = 'default_categoria.png';
+const NOME_ARQUIVO_PADRAO_PROT = 'default_protocolo.png';
+
+const storageCapasPadrao = multer.diskStorage({
+  destination: (req, file, cb) => {
+    if (!fs.existsSync(dirImages)) {
+      fs.mkdirSync(dirImages, { recursive: true });
+    }
+    cb(null, dirImages); 
+  },
+  filename: (req, file, cb) => {
+    const tipo = req.body.tipo; 
+    let nomeFinal;
+
+    if (tipo === 'categoria') {
+      nomeFinal = NOME_ARQUIVO_PADRAO_CAT;
+    } else if (tipo === 'protocolo') {
+      nomeFinal = NOME_ARQUIVO_PADRAO_PROT;
+    } else {
+      return cb(new Error('Tipo de capa padrão inválido. Utilize "categoria" ou "protocolo".'));
+    }
+
+    const caminhoCompleto = path.join(dirImages, nomeFinal);
+    if (fs.existsSync(caminhoCompleto)) {
+      try {
+        fs.unlinkSync(caminhoCompleto);
+        console.log(`📁 Capa padrão antiga '${nomeFinal}' substituída com sucesso.`);
+      } catch (err) {
+        console.error(`⚠️ Erro ao apagar capa padrão antiga '${nomeFinal}':`, err);
+      }
+    }
+
+    cb(null, nomeFinal);
+  }
+});
+const uploadCapasPadrao = multer({ storage: storageCapasPadrao });
+
+// --- 5. MIDDLEWARES DE AUTENTICAÇÃO E PERMISSÕES (Devem vir antes das rotas) ---
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; 
@@ -108,6 +142,64 @@ const checkRole = (role) => (req, res, next) => {
 // --- 6. ROTAS DA API ---
 // ==================================================================
 
+// ==================================================================
+// ROTAS DEDICADAS: Gestão de Capas Padrão Globais (Sem Conflitos)
+// ==================================================================
+
+// 1. Atualizar Capa Padrão de Categorias
+app.post('/api/configuracoes/capa-padrao-categoria', authenticateToken, checkRole('admin_master'), upload.single('nova_imagem'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'Nenhum ficheiro de imagem foi enviado.' });
+  }
+
+  const nomeFinal = 'default_categoria.png';
+  const caminhoDesejado = path.join(dirImages, nomeFinal);
+
+  if (fs.existsSync(caminhoDesejado)) {
+    try { fs.unlinkSync(caminhoDesejado); } catch(e){}
+  }
+
+  try {
+    fs.renameSync(req.file.path, caminhoDesejado);
+  } catch (err) {
+    console.error("Erro ao guardar capa padrão de categorias:", err);
+  }
+
+  res.json({
+    success: true,
+    message: 'Capa padrão de categorias atualizada com sucesso!',
+    nome_ficheiro: nomeFinal,
+    timestamp: Date.now()
+  });
+});
+
+// 2. Atualizar Capa Padrão de Protocolos
+app.post('/api/configuracoes/capa-padrao-protocolo', authenticateToken, checkRole('admin_master'), upload.single('nova_imagem'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'Nenhum ficheiro de imagem foi enviado.' });
+  }
+
+  const nomeFinal = 'default_protocolo.png';
+  const caminhoDesejado = path.join(dirImages, nomeFinal);
+
+  if (fs.existsSync(caminhoDesejado)) {
+    try { fs.unlinkSync(caminhoDesejado); } catch(e){}
+  }
+
+  try {
+    fs.renameSync(req.file.path, caminhoDesejado);
+  } catch (err) {
+    console.error("Erro ao guardar capa padrão de protocolos:", err);
+  }
+
+  res.json({
+    success: true,
+    message: 'Capa padrão de protocolos atualizada com sucesso!',
+    nome_ficheiro: nomeFinal,
+    timestamp: Date.now()
+  });
+});
+
 // --- CATEGORIAS ---
 app.get('/api/categorias', (req, res) => {
   const query = `
@@ -126,7 +218,7 @@ app.get('/api/categorias', (req, res) => {
   });
 });
 
-app.post('/api/categorias', upload.single('imagem'), (req, res) => {
+app.post('/api/categorias', authenticateToken, checkRole('admin_master'), upload.single('imagem'), (req, res) => {
     const nome = req.body.nome;
     const imagemArquivo = req.file;
 
@@ -158,32 +250,53 @@ app.put('/api/categorias/:id', authenticateToken, checkRole('admin_master'), upl
     const id = req.params.id;
     const { nome } = req.body;
     
-    let sql = "UPDATE categorias SET nome = ?";
-    let params = [nome];
-
-    if (req.file) {
-        sql += ", nome_imagem_capa = ?";
-        params.push(req.file.filename);
+    if (!nome) {
+        return res.status(400).json({ error: 'O nome da categoria é obrigatório.' });
     }
 
-    sql += " WHERE id = ?";
-    params.push(id);
+    connection.query("SELECT nome_imagem_capa FROM categorias WHERE id = ?", [id], (errSelect, results) => {
+        if (errSelect) {
+            console.error("Erro ao buscar categoria para atualização:", errSelect);
+            return res.status(500).json({ error: "Erro interno ao processar atualização." });
+        }
 
-    connection.query(sql, params, (err, result) => {
-        if (err) return res.status(500).json({ error: "Erro ao atualizar categoria: " + err.message });
-        res.json({ message: "Categoria atualizada com sucesso!" });
+        const imagemAntiga = results.length > 0 ? results[0].nome_imagem_capa : null;
+
+        let sql = "UPDATE categorias SET nome = ?";
+        let params = [nome];
+
+        if (req.file) {
+            sql += ", nome_imagem_capa = ?";
+            params.push(req.file.filename);
+        }
+
+        sql += " WHERE id = ?";
+        params.push(id);
+
+        connection.query(sql, params, (errUpdate) => {
+            if (errUpdate) {
+                console.error("Erro ao atualizar categoria:", errUpdate);
+                return res.status(500).json({ error: "Erro ao atualizar categoria no banco de dados." });
+            }
+
+            if (req.file && imagemAntiga) {
+                const caminhoAntigo = path.join(dirImages, imagemAntiga);
+                if (fs.existsSync(caminhoAntigo)) {
+                    fs.unlink(caminhoAntigo, (errUnlink) => {
+                        if (errUnlink) console.error("Erro ao remover imagem antiga da categoria:", errUnlink);
+                    });
+                }
+            }
+
+            res.json({ message: "Categoria e capa atualizadas com sucesso!" });
+        });
     });
 });
 
-// ==================================================================
-// ROTA: Deletar Categoria Inteligente (Segurança + Exclusão em Massa)
-// ==================================================================
 app.delete('/api/categorias/:id', authenticateToken, checkRole('admin_master'), (req, res) => {
     const categoriaId = req.params.id;
-    // Permite que o frontend force a exclusão em massa através de ?forcar=true
     const forcarExclusao = req.query.forcar === 'true';
 
-    // 1. Consulta se existem protocolos vinculados e recolhe os nomes dos arquivos
     connection.query(
         "SELECT id, nome_arquivo_pdf FROM protocolos WHERE categoria_id = ?",
         [categoriaId],
@@ -195,7 +308,6 @@ app.delete('/api/categorias/:id', authenticateToken, checkRole('admin_master'), 
 
             const total = listaProtocolos.length;
 
-            // Se tem protocolos e o usuário ainda não confirmou em massa: bloqueia e envia mensagem clara
             if (total > 0 && !forcarExclusao) {
                 return res.status(400).json({
                     possuiProtocolos: true,
@@ -204,7 +316,6 @@ app.delete('/api/categorias/:id', authenticateToken, checkRole('admin_master'), 
                 });
             }
 
-            // Função interna para remoção da categoria após o encadeamento
             const concluirRemocaoCategoria = () => {
                 connection.query("DELETE FROM categorias WHERE id = ?", [categoriaId], (errCat) => {
                     if (errCat) {
@@ -215,11 +326,9 @@ app.delete('/api/categorias/:id', authenticateToken, checkRole('admin_master'), 
                 });
             };
 
-            // Se for exclusão confirmada de categoria com protocolos vinculados
             if (total > 0 && forcarExclusao) {
                 const idsProtocolos = listaProtocolos.map(p => p.id);
 
-                // A. Remove dependências na tabela de favoritos
                 connection.query(
                     `DELETE FROM favoritos WHERE protocolo_id IN (${idsProtocolos.map(() => '?').join(',')})`,
                     idsProtocolos,
@@ -229,14 +338,12 @@ app.delete('/api/categorias/:id', authenticateToken, checkRole('admin_master'), 
                             return res.status(500).json({ error: "Erro ao remover favoritos vinculados aos protocolos." });
                         }
 
-                        // B. Remove os protocolos da categoria no banco
                         connection.query("DELETE FROM protocolos WHERE categoria_id = ?", [categoriaId], (errDelProt) => {
                             if (errDelProt) {
                                 console.error("Erro ao deletar protocolos em massa:", errDelProt);
                                 return res.status(500).json({ error: "Erro ao remover protocolos da categoria." });
                             }
 
-                            // C. Limpeza no disco físico (remove arquivos PDF órfãos)
                             listaProtocolos.forEach(p => {
                                 if (p.nome_arquivo_pdf) {
                                     const caminhoPdf = path.join(dirPdfs, p.nome_arquivo_pdf);
@@ -248,13 +355,11 @@ app.delete('/api/categorias/:id', authenticateToken, checkRole('admin_master'), 
                                 }
                             });
 
-                            // D. Finaliza excluindo a categoria
                             concluirRemocaoCategoria();
                         });
                     }
                 );
             } else {
-                // Categoria sem protocolos vinculados: remoção direta
                 concluirRemocaoCategoria();
             }
         }
@@ -388,7 +493,7 @@ app.post('/api/login', (req, res) => {
 });
 
 // ==================================================================
-// --- 7. SERVIR O FRONTEND REACT (ARQUITETURA UNIFICADA) ---
+// --- 7. SERVIR O FRONTEND REACT ---
 // ==================================================================
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -404,7 +509,7 @@ app.get(/.*/, (req, res) => {
 // ==================================================================
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`===========================================================`);
-  console.log(`🚀 SERVIDOR UNIFICADO (BACKEND + FRONTEND) RODANDO v13.3`);
+  console.log(`🚀 SERVIDOR UNIFICADO (BACKEND + FRONTEND) RODANDO v13.5`);
   console.log(`📡 Porta: ${PORT}`);
   console.log(`🌐 Acesso Local: http://localhost:${PORT}`);
   console.log(`🌍 Acesso Rede: http://protocolos.saovicente.lan:${PORT}`);

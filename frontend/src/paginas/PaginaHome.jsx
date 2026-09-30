@@ -1,5 +1,8 @@
 // src/paginas/PaginaHome.jsx
-// VERSÃO 3.2: Com Botão "Voltar" Moderno e Layout Ajustado
+// ==================================================================
+// PROJETO: Portal de Protocolos HSVP (Frontend v13.6 - Capas Padrão Globais)
+// ARQUITETURA: React Hooks + Fallback Dinâmico de Identidade Visual
+// ==================================================================
 
 import { useState, useEffect } from 'react'; 
 import { useAuth } from '../contexto/AuthContext'; 
@@ -21,7 +24,7 @@ function PaginaHome() {
   const { usuario } = useAuth();
   const { http, favoritos } = useApiService(); 
 
-  // --- 1. CARREGAR DADOS ---
+  // --- 1. CARREGAR DADOS DA API ---
   useEffect(() => {
     http.getPublic('categorias')
         .then(d => setCategorias(d))
@@ -35,7 +38,7 @@ function PaginaHome() {
         .catch(e => console.error("Erro protocolos:", e));
   }, []); 
 
-  // --- 2. CARREGAR FAVORITOS ---
+  // --- 2. CARREGAR FAVORITOS DO UTILIZADOR ---
   useEffect(() => {
     if (usuario) {
         favoritos.listarMeus()
@@ -46,12 +49,24 @@ function PaginaHome() {
     }
   }, [usuario]); 
 
-  // --- FUNÇÕES AUXILIARES ---
+  // --- 3. FUNÇÕES AUXILIARES DE IMAGEM (FALLBACK GLOBAL) ---
+
+  // Fallback para Capa de Protocolos
   const getImageUrl = (caminho) => {
     if (caminho && caminho !== '' && caminho !== 'null') {
         return `${IMAGES_URL}/${caminho}`;
     }
-    return `${IMAGES_URL}/capa_generica_protocolo.png`;
+    // Assume a Capa Padrão Global de Protocolos
+    return `${IMAGES_URL}/default_protocolo.png`;
+  };
+
+  // Fallback Inteligente para Capa de Categorias
+  const getCategoriaImageUrl = (caminho) => {
+    if (caminho && caminho !== '' && caminho !== 'null') {
+        return `${IMAGES_URL}/${caminho}`;
+    }
+    // Assume a Capa Padrão Global de Categorias em vez da letra azul inicial!
+    return `${IMAGES_URL}/default_categoria.png`;
   };
 
   const handleToggleFavoriteLocal = (protocoloId) => {
@@ -77,7 +92,7 @@ function PaginaHome() {
     setProtocolos(todosProtocolos); 
   };
 
-  // --- FILTROS VISUAIS ---
+  // --- 4. FILTROS VISUAIS DINÂMICOS ---
   const protocolosFiltrados = () => {
       return (protocolos || []).filter(p => p.titulo.toLowerCase().includes(termoDeBusca.toLowerCase()));
   };
@@ -121,12 +136,14 @@ function PaginaHome() {
                             onClick={() => buscarProtocolosPorCategoria(cat.id, cat.nome)}
                             role="button"
                         >
+                            {/* EXIBIÇÃO DA CAPA DE CATEGORIA CORRIGIDA (SEM O QUADRADO AZUL COM LETRA) */}
                             <div className="capa-wrapper-categoria" style={{ height: '120px' }}> 
-                              {cat.nome_imagem_capa ? (
-                                  <img src={`${IMAGES_URL}/${cat.nome_imagem_capa}`} alt={cat.nome} className="imagem-capa-2d" />
-                              ) : (
-                                  <div className="placeholder-capa-categoria">{cat.nome.charAt(0)}</div>
-                              )}
+                                <img 
+                                    src={getCategoriaImageUrl(cat.nome_imagem_capa)} 
+                                    alt={cat.nome} 
+                                    className="imagem-capa-2d" 
+                                    onError={(e) => { e.target.src = `${IMAGES_URL}/default_categoria.png`; }}
+                                />
                             </div>
                             <p className="legenda-2d" style={{fontSize: '12px', marginBottom: '2px'}}>{cat.nome}</p>
                             <span className="contador-categoria">
@@ -179,7 +196,7 @@ function PaginaHome() {
                                     src={getImageUrl(protocolo.caminho_imagem_capa)} 
                                     alt={protocolo.titulo} 
                                     className="imagem-capa-2d"
-                                    onError={(e) => {e.target.src = `${IMAGES_URL}/capa_generica_protocolo.png`}}
+                                    onError={(e) => {e.target.src = `${IMAGES_URL}/default_protocolo.png`}}
                                 />
                             </div> 
                             

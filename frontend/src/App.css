@@ -1,4 +1,7 @@
-/* Professor de Programação: App.css (VERSÃO 10.0 - Visual 3D Pro + Placeholders Modernos) */
+/* =========================================================
+   PROJETO: Portal de Protocolos HSVP
+   ESTILIZAÇÃO GLOBAL: App.css (VERSÃO 3.1.4 - Estável & Validada)
+   ========================================================= */
 
 /* --- 1. GERAL E RESET --- */
 body { 
@@ -118,18 +121,15 @@ main.layout-principal {
 .barra-busca:focus, .barra-busca-pequena:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
 
 /* --- 5. GRIDS --- */
-/* --- 5. GRIDS (ATUALIZADO PARA RESPONSIVIDADE TOTAL) --- */
 .grid-container-protocolos {
   display: grid;
-  /* MUDANÇA CRÍTICA: Em vez de 10 colunas fixas, usamos auto-fill inteligente */
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
-  gap: 20px; /* Espaço saudável entre os cards */
+  gap: 20px; 
   align-items: start;
   padding: 10px;
-  width: 100%; /* Garante que usa a largura disponível */
+  width: 100%; 
 }
 
-/* Mantém o grid lateral como está ou ajusta se necessário */
 .grid-categorias-lateral {
   display: grid;
   grid-template-columns: repeat(4, 1fr); 
@@ -147,58 +147,42 @@ main.layout-principal {
 .card-2d-container {
   display: flex; flex-direction: column; align-items: center;
   cursor: pointer; 
-  /* Transição rápida para feedback imediato no toque */
   transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
   position: relative; 
   border-radius: 6px;
   perspective: 1000px;
-  -webkit-tap-highlight-color: transparent; /* Remove o quadrado azul padrão do Android */
+  -webkit-tap-highlight-color: transparent; 
 }
 
 .card-2d-link { text-decoration: none; color: inherit; display: block; }
 
-/* =========================================
-   🖥️ COMPORTAMENTO DESKTOP (Mouse / Hover)
-   Só aplica rotação 3D se a tela for grande
-   ========================================= */
+/* COMPORTAMENTO DESKTOP (Mouse / Hover) */
 @media (min-width: 769px) {
   .card-2d-container:hover .capa-wrapper-categoria,
   .card-2d-container:hover .capa-wrapper-protocolo {
-    /* Efeito de Levitação e Rotação 3D */
     transform: rotateY(-15deg) translateY(-10px) scale(1.02);
-    
-    /* Sombra deslocada + Glow Azulado */
     box-shadow: -15px 20px 30px rgba(0, 0, 0, 0.3), 
                 0 0 15px rgba(59, 130, 246, 0.5); 
-    
     border-left: 1px solid rgba(255, 255, 255, 0.6);
     z-index: 20;
   }
 }
 
-/* =========================================
-   📱 COMPORTAMENTO MOBILE (Toque / Active)
-   Usa :active para quando o dedo encosta na tela
-   ========================================= */
+/* COMPORTAMENTO MOBILE (Toque / Active) */
 @media (max-width: 768px) {
   .card-2d-container:active {
-    /* Efeito "Tactile Press": O card encolhe levemente simulando um botão físico */
     transform: scale(0.95);
   }
 
   .card-2d-container:active .capa-wrapper-categoria,
   .card-2d-container:active .capa-wrapper-protocolo {
-    /* Efeito GLOW Intenso no Toque */
     box-shadow: 0 0 20px rgba(0, 123, 255, 0.8), 
                 0 0 40px rgba(0, 123, 255, 0.4); 
-    
-    border-color: #3b82f6; /* Borda fica azul brilhante */
+    border-color: #3b82f6; 
   }
 }
 
-/* --- MOLDURAS E ESTILOS VISUAIS (Atualizado v3.1.1 - Responsivo) --- */
-
-/* 1. Estilos Compartilhados (Base para Categorias e Protocolos) */
+/* --- MOLDURAS E ESTILOS VISUAIS --- */
 .capa-wrapper-categoria, 
 .capa-wrapper-protocolo {
   width: 100%;
@@ -212,29 +196,20 @@ main.layout-principal {
   transform-style: preserve-3d;
 }
 
-/* 2. Específico para Categorias (Mantém altura fixa retangular deitada) */
 .capa-wrapper-categoria { 
   height: 140px; 
 } 
 
-/* 3. Específico para Protocolos (Novo: Proporção de Livro Inteligente) */
 .capa-wrapper-protocolo { 
-  /* Removemos a height fixa (height: 160px) */
-  
-  /* Mágica do CSS Moderno: Mantém proporção 3:4 sempre */
   aspect-ratio: 3 / 4; 
 } 
 
-/* 4. Estilo das Imagens (Preenchimento Total) */
 .capa-wrapper-categoria .imagem-capa-2d,
 .capa-wrapper-protocolo .imagem-capa-2d {
   width: 100%; 
   height: 100%; 
-  
-  /* 'cover' garante que a imagem preencha o card sem distorcer */
   object-fit: cover; 
-  
-  padding: 0; /* Removido padding para visual "borda a borda" */
+  padding: 0; 
   transition: filter 0.3s ease;
   background-color: #fff;
 }
@@ -267,7 +242,6 @@ main.layout-principal {
   transition: color 0.3s;
 }
 
-/* O texto também fica azul no hover do Desktop */
 @media (min-width: 769px) {
     .card-2d-container:hover .legenda-2d {
       color: #0284c7; 
@@ -295,21 +269,20 @@ main.layout-principal {
 .btn-salvar:hover { background-color: #059669; }
 
 .admin-painel ul { list-style: none; padding: 0; }
-.admin-painel li { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee; }
+.admin-painel li { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; }
 .admin-botoes { display: flex; gap: 8px; }
 .btn-editar { background-color: #3b82f6; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
 .btn-deletar { background-color: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
 .btn-cancelar { background-color: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;}
 
-/* FIX PARA IMAGENS DO ADMIN (Não aplicar efeito 3D aqui) */
+/* FIX PARA IMAGENS DO ADMIN (Miniaturas controladas) */
 .admin-painel ul li img, 
 .admin-capa-thumbnail {
-  max-width: 50px !important; max-height: 70px !important; width: auto !important; height: auto !important;
-  object-fit: contain; margin-right: 15px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff;
+  max-width: 45px !important; max-height: 60px !important; width: 45px !important; height: 60px !important;
+  object-fit: cover !important; margin-right: 15px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff;
   flex-shrink: 0; box-shadow: none !important; transform: none !important;
 }
 .admin-painel ul li:hover img { transform: none !important; filter: none !important; }
-
 
 /* --- 8. LOGIN / RODAPÉ --- */
 .form-login { display: grid; grid-template-columns: 1fr; gap: 15px; text-align: left; margin-top: 20px; }
@@ -343,7 +316,7 @@ main.layout-principal {
 .label-total { font-size: 12px; font-weight: 600; color: #0056b3; }
 .badge-retangulo-azul { background-color: #0056b3; color: white; padding: 4px 12px; min-width: 35px; text-align: center; border-radius: 6px; font-size: 14px; font-weight: bold; display: inline-block; }
 
-/* --- BOTÃO VOLTAR (Outline Moderno) --- */
+/* --- BOTÃO VOLTAR --- */
 .btn-voltar-todos {
   display: inline-flex; align-items: center; gap: 8px; background-color: #fff; color: #0284c7; border: 2px solid #0284c7;
   padding: 8px 20px; border-radius: 30px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease;
