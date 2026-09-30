@@ -1,17 +1,16 @@
 // src/paginas/PaginaFavoritos.jsx
-// VERSÃO 4.1: IP Fixo Removido
+// ==================================================================
+// MÓDULO: Gestão de Favoritos do Utilizador (Com Fallback Global v3.6.0)
+// ==================================================================
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexto/AuthContext';
-// 1. IMPORTAMOS AS CONSTANTES
 import { useApiService, IMAGES_URL, PDFS_URL } from '../services/apiService'; 
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
 
 function PaginaFavoritos() {
     
-    // 2. REMOVIDO: const BACKEND_URL = ...
-
     const { usuario } = useAuth();
     const navigate = useNavigate();
     const { favoritos } = useApiService(); 
@@ -42,12 +41,13 @@ function PaginaFavoritos() {
 
     }, [usuario]); 
 
-    // 3. FUNÇÃO ATUALIZADA
+    // Função de Fallback Inteligente atualizada para a Capa Padrão Global de Protocolos
     const getImageUrl = (caminho) => {
         if (caminho && caminho !== '' && caminho !== 'null') {
             return `${IMAGES_URL}/${caminho}`;
         }
-        return `${IMAGES_URL}/capa_generica_protocolo.png`;
+        // Fallback global unificado v3.6.0
+        return `${IMAGES_URL}/default_protocolo.png`;
     };
 
     const handleRemoverFavorito = async (e, protocoloId, titulo) => {
@@ -84,7 +84,6 @@ function PaginaFavoritos() {
             <div className="grid-container-protocolos">
                 {favoritosLista.map((protocolo) => (
                   <div key={protocolo.favorito_id ? `fav-${protocolo.favorito_id}` : `proto-${protocolo.id}`} style={{position:'relative'}}>
-                    {/* 4. USO DE PDFS_URL */}
                     <a 
                       href={`${PDFS_URL}/${protocolo.nome_arquivo_pdf}`} 
                       target="_blank" 
@@ -94,12 +93,11 @@ function PaginaFavoritos() {
                       <div className="card-2d-container">
                           
                           <div className="capa-wrapper-protocolo">
-                              {/* 5. USO DE IMAGES_URL (via getImageUrl e onError) */}
                               <img 
                                 src={getImageUrl(protocolo.caminho_imagem_capa)} 
                                 alt={protocolo.titulo} 
                                 className="imagem-capa-2d" 
-                                onError={(e) => {e.target.src = `${IMAGES_URL}/capa_generica_protocolo.png`}}
+                                onError={(e) => {e.target.src = `${IMAGES_URL}/default_protocolo.png`}}
                               />
                           </div> 
                           
