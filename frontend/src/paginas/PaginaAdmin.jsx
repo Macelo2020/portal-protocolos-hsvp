@@ -1,7 +1,7 @@
 // src/paginas/PaginaAdmin.jsx
 // ==================================================================
-// MÓDULO: Página de Administração Centralizada (Com Gestão de Capas no Topo)
-// ARQUITETURA: React Hooks + Componentes Modulares Administrativos
+// MÓDULO: Página de Administração Colaborativa
+// ARQUITETURA: React Hooks + UX de Divulgação Progressiva
 // ==================================================================
 
 import { useState, useEffect } from 'react';
@@ -17,6 +17,7 @@ function PaginaAdmin() {
   const { usuario } = useAuth();
   const { http } = useApiService(); 
 
+  // Validação: Verifica quem é o admin_master para esconder APENAS as Capas
   const isMaster = usuario && usuario.funcao === 'admin_master';
 
   const [categorias, setCategorias] = useState([]);
@@ -35,25 +36,23 @@ function PaginaAdmin() {
   };
 
   useEffect(() => {
+    // Carrega os dados do servidor para TODOS os utilizadores autenticados
     recarregarCategorias();
     recarregarProtocolosAdmin(); 
   }, []); 
 
+  // ==================================================================
+  // SEÇÃO DE RENDERIZAÇÃO (Interface Liberada para Enfermagem)
+  // ==================================================================
   return (
     <div className="conteudo-pagina" style={{padding: 30, overflowY: 'auto', height: 'calc(100vh - 85px)'}}>
-      <h1 style={{marginTop: 0}}>Painel de Administração</h1>
+      <h1 style={{marginTop: 0}}>Painel de Administração e Colaboração</h1>
       
-      {usuario ? (
-        <p style={{background: '#dcfce7', padding: 10, borderRadius: 5, color: '#166534'}}>
-            Logado como: <strong>{usuario.username}</strong> ({usuario.funcao || 'Administrador'})
-        </p>
-      ) : (
-        <p style={{background: '#fee2e2', padding: 10, borderRadius: 5, color: '#991b1b'}}>
-            Atenção: Utilizador não autenticado no contexto.
-        </p>
-      )}
+      <p style={{background: '#dcfce7', padding: 10, borderRadius: 5, color: '#166534'}}>
+          Logado como: <strong>{usuario?.username}</strong> ({usuario?.funcao || 'Colaborador'})
+      </p>
 
-      {/* --- SECÇÃO DE GESTÃO DINÂMICA DAS CAPAS PADRÃO (MOVIDA PARA O TOPO) --- */}
+      {/* UX/UI: Secção de Gestão Dinâmica das Capas Padrão - SÓ APARECE PARA ADMIN MASTER */}
       {isMaster && (
         <div style={{ background: '#ffffff', padding: '20px', borderRadius: '10px', boxShadow: '0 4px 10px rgba(0,0,0,0.05)', border: '1px solid #e2e8f0', marginBottom: '40px' }}>
           <h2 style={{ color: '#004a9f', marginTop: 0 }}>🖼️ Gestão de Capas Padrão (Globais)</h2>
@@ -63,7 +62,7 @@ function PaginaAdmin() {
       
       <hr style={{ margin: '40px 0', border: '0', borderTop: '2px solid #cbd5e1' }} />
 
-      {/* Gestão de Categorias */}
+      {/* Gestão de Categorias (Liberado para a Enfermagem) */}
       <AdminCategorias 
         categorias={categorias} 
         recarregarCategorias={recarregarCategorias} 
@@ -71,7 +70,7 @@ function PaginaAdmin() {
       
       <hr style={{ margin: '40px 0', border: '0', borderTop: '2px solid #cbd5e1' }} />
 
-      {/* Gestão de Protocolos */}
+      {/* Gestão de Protocolos (Liberado para a Enfermagem) */}
       <AdminProtocolos 
         categorias={categorias} 
         listaAdminProtocolos={listaAdminProtocolos}

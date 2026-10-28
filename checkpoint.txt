@@ -1,16 +1,16 @@
 📝 CHECKPOINT DE DESENVOLVIMENTO: Portal de Protocolos HSVP
 Data do Checkpoint: 30/09/2026
-Versão Atual: 3.6.0 (Estável - Identidade Visual Dinâmica, Capas no Topo & Fallback Global)
+Versão Atual: 3.6.0 (Estável - Sincronização de Favoritos, Cores Contextuais & UX Avançada)
 Status do Repositório: Pronto para sincronização com a branch main no GitHub
 
-✅ 1. Identidade Visual Dinâmica & Capas Padrão Globais
-- Reposicionamento de AdminConfiguracoes para o Topo da PaginaAdmin.jsx, melhorando significativamente a UX do administrador.
-- Criação de rotas dedicadas no backend: POST /api/configuracoes/capa-padrao-categoria e POST /api/configuracoes/capa-padrao-protocolo.
-- Fallback inteligente integrado em PaginaHome.jsx, garantindo que categorias sem imagem própria renderizem default_categoria.png em vez de placeholders textuais.
+✅ 1. Sincronização e Persistência de Favoritos (UX/UI)
+- Normalização avançada de IDs na PaginaHome.jsx e PaginaFavoritos.jsx para garantir match exato e persistência visual entre transições de páginas.
+- Implementação de cores dinâmicas no BotaoFavoritar: Estrela amarela dourada (⭐️) na Home para itens salvos e coração vermelho (❤️️) na aba de Favoritos.
+- Eliminação definitiva de erros de duplicação na base de dados e feedback visual imediato ao utilizador.
 
 🌐 2. Infraestrutura & Servidor Unificado
 - Servidor Node.js/Express gerenciado em segundo plano pelo PM2.
 - Rotinas Automatizadas (Batch): DEPLOY_AUTOMATICO.bat e BACKUP_TOTAL_V3.bat (redundância em C: e E:).
 
-🚀 Status Final: SISTEMA EVOLUÍDO E TOTALMENTE FUNCIONAL!
-O Portal de Protocolos da BlueFrog Smart Solutions atinge um novo patamar de excelência estética e operacional para o ambiente hospitalar.
+🚀 Status Final: SISTEMA BLINDADO, ESTÉTICO E TOTALMENTE FUNCIONAL!
+O Portal de Protocolos da BlueFrog Smart Solutions atinge o ápice da usabilidade para o ambiente hospitalar.

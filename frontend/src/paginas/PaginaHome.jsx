@@ -1,7 +1,7 @@
 // src/paginas/PaginaHome.jsx
 // ==================================================================
-// PROJETO: Portal de Protocolos HSVP (Frontend v13.6 - Capas Padrão Globais)
-// ARQUITETURA: React Hooks + Fallback Dinâmico de Identidade Visual
+// PROJETO: Portal de Protocolos HSVP (Frontend v13.6 - Sincronização de Favoritos)
+// ARQUITETURA: React Hooks + Normalização Segura de IDs de Favoritos
 // ==================================================================
 
 import { useState, useEffect } from 'react'; 
@@ -38,11 +38,15 @@ function PaginaHome() {
         .catch(e => console.error("Erro protocolos:", e));
   }, []); 
 
-  // --- 2. CARREGAR FAVORITOS DO UTILIZADOR ---
+  // --- 2. CARREGAR FAVORITOS DO UTILIZADOR COM NORMALIZAÇÃO DE IDs ---
   useEffect(() => {
     if (usuario) {
         favoritos.listarMeus()
-            .then(dados => setFavoritosDoUsuario(dados))
+            .then(dados => {
+                // Normaliza para extrair sempre o ID numérico do protocolo independentemente do formato retornado
+                const idsNormalizados = (dados || []).map(fav => Number(fav.protocolo_id || fav.id || (fav.Protocolo && fav.Protocolo.id)));
+                setFavoritosDoUsuario(idsNormalizados);
+            })
             .catch(e => console.error("Erro favoritos:", e));
     } else {
         setFavoritosDoUsuario([]);
@@ -51,30 +55,30 @@ function PaginaHome() {
 
   // --- 3. FUNÇÕES AUXILIARES DE IMAGEM (FALLBACK GLOBAL) ---
 
-  // Fallback para Capa de Protocolos
   const getImageUrl = (caminho) => {
     if (caminho && caminho !== '' && caminho !== 'null') {
         return `${IMAGES_URL}/${caminho}`;
     }
-    // Assume a Capa Padrão Global de Protocolos
     return `${IMAGES_URL}/default_protocolo.png`;
   };
 
-  // Fallback Inteligente para Capa de Categorias
   const getCategoriaImageUrl = (caminho) => {
     if (caminho && caminho !== '' && caminho !== 'null') {
         return `${IMAGES_URL}/${caminho}`;
     }
-    // Assume a Capa Padrão Global de Categorias em vez da letra azul inicial!
     return `${IMAGES_URL}/default_categoria.png`;
   };
 
+  // Atualização otimizada do estado local de favoritos
   const handleToggleFavoriteLocal = (protocoloId) => {
-    if (favoritosDoUsuario.some(fav => fav.protocolo_id === protocoloId)) {
-        setFavoritosDoUsuario(prev => prev.filter(fav => fav.protocolo_id !== protocoloId));
-    } else {
-        setFavoritosDoUsuario(prev => [...prev, { protocolo_id: protocoloId, id: Date.now(), usuario_id: usuario?.id }]);
-    }
+    const idNum = Number(protocoloId);
+    setFavoritosDoUsuario(prev => {
+        if (prev.includes(idNum)) {
+            return prev.filter(id => id !== idNum);
+        } else {
+            return [...prev, idNum];
+        }
+    });
   };
 
   const buscarProtocolosPorCategoria = (idDaCategoria, nomeDaCategoria) => {
@@ -136,7 +140,6 @@ function PaginaHome() {
                             onClick={() => buscarProtocolosPorCategoria(cat.id, cat.nome)}
                             role="button"
                         >
-                            {/* EXIBIÇÃO DA CAPA DE CATEGORIA CORRIGIDA (SEM O QUADRADO AZUL COM LETRA) */}
                             <div className="capa-wrapper-categoria" style={{ height: '120px' }}> 
                                 <img 
                                     src={getCategoriaImageUrl(cat.nome_imagem_capa)} 
@@ -180,7 +183,8 @@ function PaginaHome() {
 
             <div className="grid-container-protocolos">
                 {protocolosFiltrados().map(protocolo => {
-                    const isFavoritado = favoritosDoUsuario.some(fav => fav.protocolo_id === protocolo.id);
+                    // Verificação blindada convertendo ambos os lados para número
+                    const isFavoritado = favoritosDoUsuario.includes(Number(protocolo.id));
                     return (
                       <div key={protocolo.id} style={{position:'relative'}}>
                         <a 
@@ -209,6 +213,7 @@ function PaginaHome() {
                                 protocoloId={protocolo.id}
                                 isFavoritado={isFavoritado}
                                 onToggleFavorite={handleToggleFavoriteLocal}
+                                contexto="home"
                             />
                         </div>
                       </div>

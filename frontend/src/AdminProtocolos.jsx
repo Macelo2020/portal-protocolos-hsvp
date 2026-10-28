@@ -1,14 +1,18 @@
 // src/AdminProtocolos.jsx
 // ==================================================================
-// PROJETO: Portal de Protocolos HSVP (Frontend v4.1 - Reativo)
-// ARQUITETURA: React Hooks + Sincronização Unificada de Estado
+// PROJETO: Portal de Protocolos HSVP (Frontend v4.2 - Progressive Disclosure)
+// ARQUITETURA: React Hooks + UX Dinâmico (Role-based UI)
 // ==================================================================
 
 import { useState, useEffect } from 'react';
+import { useAuth } from './contexto/AuthContext'; // 1. Importamos a Autenticação
 import { useApiService, IMAGES_URL } from './services/apiService';
 
-// 🛠️ CORREÇÃO CRUCIAL: Recebe as props 'categorias' e 'recarregarProtocolosAdmin' do componente Pai (PaginaAdmin)
 function AdminProtocolos({ categorias = [], listaAdminProtocolos = [], recarregarProtocolosAdmin }) {
+  // 2. Validação de UX/UI: Verifica se é administrador
+  const { usuario } = useAuth();
+  const isMaster = usuario && usuario.funcao === 'admin_master';
+
   // Lista local de protocolos para permitir recarregamento após inserção ou exclusão
   const [protocolos, setProtocolos] = useState([]);
   
@@ -34,7 +38,7 @@ function AdminProtocolos({ categorias = [], listaAdminProtocolos = [], recarrega
     }
   }, [listaAdminProtocolos]);
 
-  // Função exclusiva para buscar protocolos (categorias agora vêm reativamente do pai)
+  // Função exclusiva para buscar protocolos
   const carregarProtocolos = () => {
     if (typeof recarregarProtocolosAdmin === 'function') {
       recarregarProtocolosAdmin();
@@ -162,7 +166,6 @@ function AdminProtocolos({ categorias = [], listaAdminProtocolos = [], recarrega
       return `${IMAGES_URL}/capa_generica_protocolo.png`;
   };
 
-  // Filtragem dinâmica para pesquisa sem chamadas extras ao servidor
   const protocolosFiltrados = protocolos.filter(p => 
       p.titulo.toLowerCase().includes(termoBusca.toLowerCase())
   );
@@ -181,11 +184,9 @@ function AdminProtocolos({ categorias = [], listaAdminProtocolos = [], recarrega
       {/* --- FORMULÁRIO DE GESTÃO --- */}
       <form className="admin-form-protocolo" onSubmit={handleSalvar} style={{border: editandoId ? '2px solid #3b82f6' : '1px solid #ddd'}}>
         
-        {/* Linha 1: Seleção de Categoria e Título */}
         <div className="form-linha">
             <div className="form-coluna">
                 <label>Categoria:</label>
-                {/* O <select> agora consome diretamente a lista atualizada em tempo real */}
                 <select value={categoriaId} onChange={e => setCategoriaId(e.target.value)} required style={{padding: 10}}>
                   <option value="">Selecione...</option>
                   {categorias.map(c => (
@@ -210,7 +211,6 @@ function AdminProtocolos({ categorias = [], listaAdminProtocolos = [], recarrega
             )}
         </div>
 
-        {/* Linha 2: Uploads (PDF e Imagem de Capa) */}
         <div className="form-linha">
             <div className="form-coluna">
                 <label>
@@ -226,9 +226,10 @@ function AdminProtocolos({ categorias = [], listaAdminProtocolos = [], recarrega
                 />
             </div>
 
-            {(editandoId || arquivosPdf.length === 1) && (
+            {/* PROGRESSIVE DISCLOSURE: Oculta o upload de capa para a Enfermagem */}
+            {isMaster && (editandoId || arquivosPdf.length === 1) && (
                 <div className="form-coluna">
-                    <label>{editandoId ? 'Nova Capa (Opcional):' : 'Imagem de Capa (Opcional):'}</label>
+                    <label>{editandoId ? 'Nova Capa (Apenas Admin):' : 'Imagem de Capa (Apenas Admin):'}</label>
                     <input 
                         type="file" 
                         accept="image/*" 

@@ -25,7 +25,7 @@ function Footer() {
                 Criação e desenvolvimento: <strong>Blue Frog Smart Solutions</strong>
             </p>
             <p className="footer-version">
-                Versão 3.6.0 - Identidade Visual Dinâmica & UX Avançada
+                Versão 3.7.0 - Identidade Visual Dinâmica & UX Avançada
             </p>
         </div>
 
